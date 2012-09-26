@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<LINK href="css/bootstrap.css" rel="stylesheet" type="text/css">
+		<!-- Always force latest IE rendering engine (even in intranet) & Chrome Frame
+		Remove this if you use the .htaccess -->
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+
+		<title>IMDBhax</title>
+		<meta name="description" content="" />
+		<meta name="author" content="AMRoche" />
+		<!-- Replace favicon.ico & apple-touch-icon.png in the root of your domain and delete these references -->
+		<link rel="shortcut icon" href="/favicon.ico" />
+		<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+	</head>
+<body>
+<div id="olol" style="width:200px; height:200px; background:red;">
+	
+</div>
+
+<form action = "gather.php" method="post" class = "calendarButton" id="getInfo">
+			<input type = "number" class = "hidden" name="difficulty" value = "10" id="numVal">
+			<input type = "submit" id = "request" name="requester" value="">
+		</form>
+			
+</body>	
+<script src="jQuery.js"></script>	
+<script type="text/javascript">	
+document.getElementById("getInfo").addEventListener("change", function(){
+	if(document.getElementById("numVal").value < 3){
+		document.getElementById("numVal").value = 3;
+		console.log("LOL");
+	}
+});
+		$('#getInfo').live('submit', function() {
+		$.ajax({// create an AJAX call...
+			data : $(this).serialize(), // get the form data
+			type : 'POST', // GET or POST
+			url : $(this).attr('action'),
+			success : function(response) {// on success..
+				var responder = $(response);
+				document.getElementById("olol").innerHTML = responder[0].innerHTML;
+				console.log(responder[0]);
+			}
+		});
+		return false;
+	});
+	
+</script>

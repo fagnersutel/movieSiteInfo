@@ -35,9 +35,11 @@ if(file_exists("json_top_films.txt") && file_exists("json_top_hundred")){
 //function oneHundredWrite(){
 //errors on: the dark knight rises.				
 foreach ($topOneHundred as $key=>$lulz) {
+		file_put_contents("json_top_films.txt", JSON_encode($topOneHundred));
+	
 	print_r($key);	
 	//increment this to the point where your sample quantity is finished.
-	if($topOneHundred[$key]->Title == $topOneHundredContents[$key]->Title && $key > 98)
+	if($topOneHundred[$key]->Title == $topOneHundredContents[$key]->Title && $key > 29)
 	//print_r($topOneHundred[$key]);
 	if("x"=="x")
 	{
@@ -120,9 +122,7 @@ $lulz->Characters[0]->ImageURL = array();
 			}
 		//}
 	}
-	file_put_contents("json_top_films.txt", JSON_encode($topOneHundred));
 	}
-
 }
 echo '	<script type="text/javascript">
    alert("DONE FOR NOW");
