@@ -155,6 +155,7 @@ function guessSelected(idOfGuess) {
 	//console.log("THING2:"+passedId);
 	if (idOfGuess == parseInt(passedId)) {
 		document.getElementById("olol").innerHTML = "CORRECT!"
+		changePoints(1);
 		gapi.hangout.data.submitDelta({
 			command : "itGotGuessed",
 			guessedBy : gapi.hangout.getLocalParticipant().person.displayName
@@ -197,8 +198,8 @@ function charSelected(idoflulz) {
 	responseString += "<p>" + data.Bio[idoflulz] + "</p>";
 	responseString += "</div>";
 	responseString += "</div>";
-	responseString += '<input type="button" value="Forfeit Round!" id="forfeitRound" onclick="forfeit()"> <input type="button" value="Start Timer!" id="startTimer" onclick="startCountdown()">';
-	responseString += '<input type="button" value="pause" onclick="pauseCountdown()">';
+	responseString += '<input type="button" value="Forfeit Round!" id="forfeitRound" onclick="forfeit()"> <input type="button" value="Start Timer!" id="startTimer" onclick="gapi.hangout.data.submitDelta({command : "startCountdown"});">';
+	responseString += '<input type="button" value="pause" onclick="gapi.hangout.data.submitDelta({command : "pauseCountdown"});">';
 	document.getElementById('wrapper').innerHTML = responseString;
 }
 
@@ -239,11 +240,20 @@ $('#getInfo').live('submit', function() {
 
 function onStateChanged(event) {
 	try {
-		if(gapi.hangout.data.getState().commend == "forfeit"){
+		if(gapi.hangout.data.getState().command == "startCountdown"){
+			startCountdown();
+		}
+		if(gapi.hangout.data.getState().command == "pauseCountdown"){
+			pauseCountdown();
+		}
+		if(gapi.hangout.data.getState().command == "forfeit"){
 			document.getElementById("wrapper").innerHTML = gapi.hangout.data.getState().forfeitBy+" forfeited the round. Boo him.";
 			setTimeout(nextPlayer(),5000);
 		}
 		if(gapi.hangout.data.getState().command == "itGotGuessed"){
+				if(mode == 1){
+				changePoints(2);
+			}
 			var stringToReplace = "It got guessed by "+gapi.hangout.data.getState().guessedBy;
 			document.getElementById("wrapper").innerHTML = stringToReplace;
 			setTimeout(nextPlayer(),5000);
