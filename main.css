@@ -1,0 +1,6 @@
+/* CSS crunched with Crunch - http://crunchapp.net/ */
+body{position:absolute;}body .hidden{display:none;}
+body #fadescreen{position:relative;top:0px;left:0px;}
+body #wrapper{max-height:200px;overflow-y:scroll;width:300px;background:teal;}body #wrapper .characters{border:1px dashed #000000;}body #wrapper .characters .nameInTitle{font-weight:bold;}
+body #wrapper .characters .bio{max-height:300px;text-overflow:ellipses;overflow:hidden;}body #wrapper .characters .bio p{margin-top:0px;}
+body #wrapper .characters .bio img{width:150px;}

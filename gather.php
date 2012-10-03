@@ -1,31 +1,32 @@
 <?php
-
+header('Content-type: application/json');
+//header('Access-Control-Allow-Origin: *');
 $JSONtext = JSON_decode(file_get_contents("json_top_films.txt"));
 //echo($JSONtext);
 $returnArr = array();
+$newJSON = array("Image"=>array(),"Name"=>array(),"Actor"=>array(),"Title"=>array(), "Bio"=>array());
 $maxNum = 10;
-
-if (isset($_POST['difficulty'])) {
-	echo("LOL");
-	$maxNum = $_POST['difficulty'];
+$JSON = "";
+if (isset($_GET['difficulty'])) {
+$maxNum = $_GET['difficulty'];
+}
+for ($i = 0; $i < $maxNum; $i++) {
+array_push($returnArr, $JSONtext[floor(rand(0, 99))]);
+}
+foreach ($returnArr as $key => $lulz) {
+$arrayMax = sizeof($lulz -> Characters[0] -> Actor) - 1;
+$randMax = floor(rand(0, $arrayMax));
+$imageVar = "";
+array_push($newJSON["Actor"],$lulz -> Characters[0] -> Actor[$randMax]);
+array_push($newJSON["Name"],$lulz -> Characters[0] -> Name[$randMax]);
+array_push($newJSON["Title"], $lulz -> Title);
+array_push($newJSON["Image"], $lulz -> Characters[0] -> ImageURL[$randMax]);
+array_push($newJSON["Bio"], $lulz -> Characters[0] -> Bio[$randMax]);
 }
 
-for($i = 0; $i < $maxNum; $i++){
-	array_push($returnArr,$JSONtext[floor(rand(0,99))]);
-}
+//printf(JSON_encode($newJSON));
 
-echo("<div id='wrapper'>");
-foreach($returnArr as $key=>$lulz){
-	$arrayMax = sizeof($lulz->Characters[0]->Actor)-1;
-	$randMax = floor(rand(0,$arrayMax));
-	echo("<div class='charId' id='char".$key."'>".$lulz->Characters[0]->Actor[$randMax]." as ".$lulz->Characters[0]->Name[$randMax]." in ".$lulz->Title.".</div>");
-
-	if($lulz->Characters[0]->ImageURL[$randMax] != "null"){
-	echo("<img class='charImage' id = 'img".$key."'src ='".$lulz->Characters[0]->ImageURL[$randMax]."'>");	
-	}
-	echo("<div class='bio' id='bio".$key."'>".$lulz->Characters[0]->Bio[$randMax]."</div>");
-
-}
-echo("</div>");
-
+  print $_GET['jsoncallback']. '('.JSON_encode($newJSON).')';
+//array_push($newArr, array("html" => $JSON));
+//echo(JSON_encode($newArr));
 ?>

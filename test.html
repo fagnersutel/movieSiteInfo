@@ -1,0 +1,60 @@
+
+<div id ="time">02:00</div>
+<input type="button" value="start" onclick="startCountdown()">
+<input type="button" value="pause" onclick="pauseCountdown()">
+
+<script type="text/javascript">
+var interval;
+var pause = true;
+	var minutes = "";
+	var seconds = "";
+	function pauseCountdown(){
+		if(pause == false){
+			clearInterval(interval);
+			pause = true;
+		}
+	}
+	function startCountdown() {
+		if(pause == true){
+			pause = false;
+			interval = window.setInterval(count, 1000);
+		}
+	}
+
+	function count() {
+		var minSec = document.getElementById("time").innerHTML.split(":");
+		minutes = parseInt(minSec[0]);
+		seconds = parseInt(minSec[1]);
+		if (minutes == "00" && seconds == "00") {
+			clearInterval(interval);
+		}
+
+		if (document.getElementById('time').innerHTML != "00:00") {
+
+			if (seconds == 0) {
+				minutes -= 1;
+				seconds += 60;
+			}
+			if (minutes == 0 && seconds == 0) {
+				minutes == 0;
+				seconds == 1;
+				clearInterval(interval);
+			}
+
+			if (minutes >= 0 && seconds >= 0) {
+				seconds = seconds - 1;
+			}
+			if (minutes < 10 && minutes.length != 2) {
+				minutes = "0" + minutes;
+			}
+			if (seconds < 10 && seconds.length != 2) {
+				seconds = "0" + seconds;
+			}
+
+			if (minutes == 0) {
+				minutes = "00";
+			}
+			document.getElementById("time").innerHTML = minutes + ":" + seconds;
+		}
+	}
+</script>

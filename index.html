@@ -2,11 +2,11 @@
 <html lang="en">
 	<head>
 		<meta charset="utf-8" />
-		<LINK href="css/bootstrap.css" rel="stylesheet" type="text/css">
+		<LINK href="https://dev.welikepie.com/~though30/welikepie.com/dev/movieSiteInfo/main.css" rel="stylesheet" type="text/css">
 		<!-- Always force latest IE rendering engine (even in intranet) & Chrome Frame
 		Remove this if you use the .htaccess -->
 		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-
+		<LINK REL=StyleSheet HREF="main.css" TYPE="text/css">
 		<title>IMDBhax</title>
 		<meta name="description" content="" />
 		<meta name="author" content="AMRoche" />
@@ -14,37 +14,245 @@
 		<link rel="shortcut icon" href="/favicon.ico" />
 		<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 	</head>
-<body>
-<div id="olol" style="width:200px; height:200px; background:red;">
+		<script src="https://hangoutsapi.talkgadget.google.com/hangouts/api/hangout.js?v=1.0" ></script>
+		<script src="https://dev.welikepie.com/~though30/welikepie.com/dev/movieSiteInfo/jQuery.js"></script>
+		<script src="https://talkgadget.google.com/hangouts/_/api/hangout.js?v=1.2" ></script>
+	<script type="text/javascript">
 	
-</div>
-
-<form action = "gather.php" method="post" class = "calendarButton" id="getInfo">
-			<input type = "number" class = "hidden" name="difficulty" value = "10" id="numVal">
-			<input type = "submit" id = "request" name="requester" value="">
-		</form>
+	var startScreen = '<div id="fadescreen"></div><!--<div id="points">0</div>--><input type="button" value="Oh! Me First!" onclick="contentSwap(selectCharacterScreen)">'
+			+'<input type="button" value="I\'ll guess..." onclick = "contentSwap(guessActor)">';
 			
-</body>	
-<script src="jQuery.js"></script>	
-<script type="text/javascript">	
-document.getElementById("getInfo").addEventListener("change", function(){
-	if(document.getElementById("numVal").value < 3){
-		document.getElementById("numVal").value = 3;
-		console.log("LOL");
+	var guessActor = '	<!--<div id="points">0</div>-->'
+		+	'<div id="time">01:30</div>'
+		+	'<div id="olol"> '
+		+		'<p> Waiting for the charade master to make his choice.</p>'
+		+	'</div>';
+	
+	var selectCharacterScreen = '<div id="fadescreen"></div>'
+	+		'<!--<div id="points">-->'
+	+			'0'
+	+		'</div><div id="time">01:30</div>'
+	+		'<div id="wrapper"><div id="olol"></div>'
+	+			'<form action = "" method="post" class = "calendarButton" id="getInfo">'
+	+				'<input type = "number" name="difficulty" value = "10" id="numVal">'
+	+				'<input type = "submit" id = "request" name="requester" value="Get me characters!">'
+	+			'</form>'
+	+		'</div>';
+	
+	var passedId="";
+	var data = "";
+	var interval;
+	var pause = true;
+	var minutes = "";
+	var seconds = "";
+	
+	function changePoints(points){
+		document.getElementById("points").innerHTML = parseInt(document.getElementById("points").innerHTML)+points;
 	}
-});
-		$('#getInfo').live('submit', function() {
-		$.ajax({// create an AJAX call...
-			data : $(this).serialize(), // get the form data
-			type : 'POST', // GET or POST
-			url : $(this).attr('action'),
-			success : function(response) {// on success..
-				var responder = $(response);
-				document.getElementById("olol").innerHTML = responder[0].innerHTML;
-				console.log(responder[0]);
+	function contentSwap(selector){
+		document.getElementById("contentWrapper").innerHTML = selector;
+		if(selector == selectCharacterScreen){
+			document.getElementById("getInfo").addEventListener("change", function() {
+			if (document.getElementById("numVal").value < 3) {
+				document.getElementById("numVal").value = 3;
+			}
+			if (document.getElementById("numVal").value > 10) {
+				document.getElementById("numVal").value = 10;
 			}
 		});
-		return false;
-	});
+		}
+	}
 	
-</script>
+	function pauseCountdown(){
+		if(pause == false){
+			clearInterval(interval);
+			pause = true;
+		}
+	}
+	function startCountdown() {
+		if(pause == true){
+			pause = false;
+			interval = window.setInterval(count, 1000);
+		}
+	}
+
+	function count() {
+		var minSec = document.getElementById("time").innerHTML.split(":");
+		minutes = parseInt(minSec[0]);
+		seconds = parseInt(minSec[1]);
+		if (minutes == "00" && seconds == "00") {
+			clearInterval(interval);
+		}
+
+		if (document.getElementById('time').innerHTML != "00:00") {
+
+			if (seconds == 0) {
+				minutes -= 1;
+				seconds += 60;
+			}
+			if (minutes == 0 && seconds == 0) {
+				minutes == 0;
+				seconds == 1;
+				clearInterval(interval);
+			}
+
+			if (minutes >= 0 && seconds >= 0) {
+				seconds = seconds - 1;
+			}
+			if (minutes < 10 && minutes.length != 2) {
+				minutes = "0" + minutes;
+			}
+			if (seconds < 10 && seconds.length != 2) {
+				seconds = "0" + seconds;
+			}
+
+			if (minutes == 0) {
+				minutes = "00";
+			}
+			document.getElementById("time").innerHTML = minutes + ":" + seconds;
+		}
+	}
+
+		function forfeit(){
+			contentSwap(guessActor);
+			//broadcast forfeit and choose next participant from array.
+		}
+		
+
+		parseData = function(response){
+			var insertThing = "";
+					for (var i = 0; i < response.Title.length; i++) {
+						insertThing += "<div class = 'characters' id = 'char" + i + "' onclick=guessSelected(" + i + ")><div class='nameInTitle' id='nameInTitle" + i + "'>";
+						insertThing += "<p>" + response.Actor[i] + " as " + response.Name[i] + " in " + response.Title[i] + ".</p></div>";
+						insertThing += "<div class= 'bio' id='bio" + i + "''>";
+						if (response.Image[i] != 'null' && response.Image[i] != undefined) {
+							insertThing += "<img class='image' align='left' id= 'img" + i + "' src='" + response.Image[i] + "'>";
+						}
+						insertThing += "<p class='hidden'>" + response.Bio[i] + "</p>";
+						insertThing += "</div>";
+						insertThing += "</div>";
+					}
+			document.getElementById("olol").innerHTML = insertThing;
+		}
+		
+		function guessSelected(idOfGuess){
+			if(idOfGuess==passedId){
+				document.getElementById("olol").innerHTML = "CORRECT!"
+				//trigger message sent to tell everyone they suck, wait five, cycle to next person.
+				
+			}
+			if(idOfGuess!=passedId){
+				document.getElementById("olol").innerHTML = "INCORRECT! <p>Wait out the round to see if one of your co-players guessed it!";
+				//trigger message sent to tell everyone they suck, wait five, cycle to next person.
+				
+				
+			}
+		}
+		function charSelected(idoflulz) {
+			console.log(idoflulz);
+			var transmission = document.getElementById('wrapper').innerHTML;
+			console.log(transmission);
+			gapi.hangout.data.sendMessage(
+          JSON.stringify(["array",
+                          "I'm Rick James, bitch",
+                          data]));
+
+			//push to other clients of thingy at this point with all possible choices.
+			//push with data ID, transmission as data, and charSelected.
+			var responseString = "";
+			responseString += "<div class = 'characters' id = 'char" + idoflulz + "' onclick=charSelected(" + idoflulz + ")><div class='nameInTitle' id='nameInTitle" + idoflulz + "'>";
+			responseString += "<p>" + data.Actor[idoflulz] + " as " + data.Name[idoflulz] + " in " + data.Title[idoflulz] + ".</p></div>";
+			responseString += "<div class= 'bio' id='bio" + idoflulz + "''>";
+			if (data.Image[idoflulz] != 'null' && data.Image[idoflulz] != undefined) {
+				responseString += "<img class='image' align='left' id= 'img" + idoflulz + "' src='" + data.Image[idoflulz] + "'>";
+			}
+			responseString += "<p>" + data.Bio[idoflulz] + "</p>";
+			responseString += "</div>";
+			responseString += "</div>";
+			responseString += '<input type="button" value="Forfeit Round!" id="forfeitRound" onclick="forfeit()"> <input type="button" value="Start Timer!" id="startTimer" onclick="startCountdown()">';
+			responseString += '<input type="button" value="pause" onclick="pauseCountdown()">';
+			document.getElementById('wrapper').innerHTML = responseString;
+		}
+
+
+		$('#getInfo').live('submit', function() {
+			//document.getElementById('points').innerHTML = (10 - document.getElementById("numVal").value) * 1000;
+			$.ajax({
+				url : "http://dev.welikepie.com/movieSiteInfo/gather.php?difficulty=" + document.getElementById("numVal").value + "&jsoncallback=?",
+				dataType : 'jsonp',
+				success : function(response) {
+					data = response;
+					document.getElementById("wrapper").innerHTML = "";
+					//Actor, Name, Title, Image, Bio
+					var insertString = "";
+					for (var i = 0; i < response.Title.length; i++) {
+						insertString += "<div class = 'characters' id = 'char" + i + "' onclick=charSelected(" + i + ")><div class='nameInTitle' id='nameInTitle" + i + "'>";
+						insertString += "<p>" + response.Actor[i] + " as " + response.Name[i] + " in " + response.Title[i] + ".</p></div>";
+						insertString += "<div class= 'bio' id='bio" + i + "''>";
+						if (response.Image[i] != 'null' && response.Image[i] != undefined) {
+							insertString += "<img class='image' align='left' id= 'img" + i + "' src='" + response.Image[i] + "'>";
+						}
+						insertString += "<p class='hidden'>" + response.Bio[i] + "</p>";
+						insertString += "</div>";
+						insertString += "</div>";
+					
+					}
+						insertString += '<input type="button" value="Forfeit Round!" id="forfeitRound" onclick="forfeit()">';
+						document.getElementById("wrapper").innerHTML = insertString;
+					console.log(response.Title);
+					//console.log(response.Title[0]+","+response.Title.length);
+				}
+			});
+			return false;
+		});
+
+/*gapi.hangout.data.sendMessage(
+          JSON.stringify(["array",
+                          "I'm Rick James, bitch",
+                          data]));
+*/
+		
+		/** Get a message.
+ * @param {MessageReceievedEvent} event An event.
+ */
+function onMessageReceived(event) {
+  try {
+    var data = JSON.parse(event.message);
+	console.log(data);
+   
+  } catch (e) {
+    console.log(e);
+  }
+}
+
+/** Kick off the app. */
+function init() {
+  // When API is ready...
+  gapi.hangout.onApiReady.add(
+      function(eventObj) {
+        if (eventObj.isApiReady) {
+          try {
+            gapi.hangout.data.onMessageReceived.add(onMessageReceived);
+			contentSwap(startScreen);
+            
+          } catch (e) {
+            console.log('init:ERROR');
+            console.log(e);
+          }
+        }
+      });
+}
+
+
+// Wait for gadget to load.                                                       
+gadgets.util.registerOnLoadHandler(init);
+		
+		
+	</script>
+
+	<body>
+		<div id="contentWrapper">
+		<!--<div id="points">0</div>-->
+		</div>
+	</body>
+</html>
