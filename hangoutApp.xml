@@ -12,6 +12,8 @@
 	* License for the specific language governing permissions and limitations under
 	* the License
 	-->
+	<!-- pull 15 at beginning, select random to show actor, propogate rest-->
+	
 	<ModulePrefs title="Hangout Starter">
 		<Require feature="rpc" />
 		<Require feature="views" />
