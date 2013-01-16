@@ -1,0 +1,26 @@
+{
+	"GameModes":[
+			{
+				"Title" : "10 Round Shoot-Out", 
+				"Description" : "10 rounds of guessing, then the maximum points is the winner!",
+				"ButtonText":"10 Round Shoot-Out",
+				"id":"10RoundShootOut"
+			},
+			{
+				"Title": "3 Shots Each",
+				"Description" : " 3 Shots Each, after that, the guy with the most hits wins!",
+				"ButtonText" : "3 Shots Each",
+				"id":"3ShotsEach"
+			},
+			{
+				"Title" : "Quick Fire",
+				"Description" : "20 shots, 30 seconds to make your shot. 'Nuff said soldier.",
+				"ButtonText" : "Quick Burst",
+				"id":"QuickFire"
+			}
+			],
+	"InputText" : {
+	"menuAfter": "Hi there! We're just waiting on a game mode to be picked."
+	}
+}
+
