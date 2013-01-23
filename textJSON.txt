@@ -19,8 +19,10 @@
 				"id":"QuickFire"
 			}
 			],
-	"InputText" : {
-	"menuAfter": "Hi there! We're just waiting on a game mode to be picked."
-	}
+	"InputText" : [{
+	"menuAfterText": "Hi there! We're just waiting on a game mode to be picked.",
+	"outOfTimeText": "We're sorry, the timer ran out while we were waiting for you to make your point.",
+	"endScreenText": "Game Finished, congratulations!"
+	}]
 }
 

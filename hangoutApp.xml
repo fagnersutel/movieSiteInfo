@@ -41,7 +41,7 @@
 		body{position:absolute;}body .hidden{display:none;}
 		body #fadescreen{position:relative;top:0px;left:0px;}
 		body #wrapper{height:300px;scroll:auto;overflow-y:scroll;width:300px;background:teal;}body #wrapper .characters{border:1px dashed #000000;}body #wrapper .characters .nameInTitle{font-weight:bold;}
-		body #wrapper .characters .bio{text-overflow:ellipses;overflow-y:scroll;}body #wrapper .characters .bio p{margin-top:0px;}
+		body #wrapper .characters .bio{text-overflow:ellipses;}body #wrapper .characters .bio p{margin-top:0px;overflow-y:scroll;}
 		body #wrapper .characters .bio img{width:150px;}
 
 		-->
@@ -52,10 +52,6 @@
 		
 		<body>
 			<div id="container">
-				<div id="points">0</div>
-				<div id="time"></div>
-				<div id="wrapper">
-				</div>
 			</div>
 		</body>
 
