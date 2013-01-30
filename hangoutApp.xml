@@ -46,8 +46,8 @@
 
 		-->
 		</style>
-		<script src="https://dev.welikepie.com/~though30/welikepie.com/dev/movieSiteInfo/jQuery.js"></script>
 		<script src="https://talkgadget.google.com/hangouts/_/api/hangout.js?v=1.2" ></script>
+		<script src="https://dev.welikepie.com/~though30/welikepie.com/dev/movieSiteInfo/jQuery.js"></script>
 		<script src="https://dev.welikepie.com/~though30/welikepie.com/dev/movieSiteInfo/script.js"></script>
 		
 		<body>
