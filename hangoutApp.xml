@@ -23,6 +23,8 @@
 		<![CDATA[
 
 		<html>
+			<header>
+			</header>
 		<style type="text/css">
 		<!--
 		.button {
@@ -46,15 +48,18 @@
 
 		-->
 		</style>
-		<script src="https://talkgadget.google.com/hangouts/_/api/hangout.js?v=1.2" ></script>
-		<script src="https://dev.welikepie.com/~though30/welikepie.com/dev/movieSiteInfo/jQuery.js"></script>
-		<script src="https://dev.welikepie.com/~though30/welikepie.com/dev/movieSiteInfo/script.js"></script>
 		
 		<body>
 			<div id="container">
 			</div>
 		</body>
-
+		<footer>
+			
+		<script src="https://talkgadget.google.com/hangouts/_/api/hangout.js?v=1.2" ></script>
+		<script src="https://dev.welikepie.com:444/movieSiteInfo/jQuery.js"></script>
+		<script src="https://dev.welikepie.com:444/movieSiteInfo/script.js"></script>
+		</footer>
+		</html>
 		]]>
 	</Content>
 </Module>
