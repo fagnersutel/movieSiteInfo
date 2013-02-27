@@ -2,8 +2,8 @@
 
 header('Content-type: application/json');
 //header('Access-Control-Allow-Origin: *');
-$JSONtext = JSON_decode(file_get_contents("formattedJSON.txt"), true);
-//echo($JSONtext);
+$JSONtext = JSON_decode(file_get_contents("formattedJSON.json"), true);
+
 $returnArr = array();
 $newJSON = array("Image" => array(), "Name" => array(), "Actor" => array(), "Title" => array(), "Bio" => array());
 $maxNum = 10;

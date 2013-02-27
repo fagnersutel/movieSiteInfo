@@ -38,6 +38,7 @@ var currentRound = 0;
 //set depending on gameMode
 var maxRounds = 100;
 var gameMode;
+var gameFinished = false;
 
 //---------------------------------------------UTILITY FUNCTIONS--------------------------------------
 function changePoints(addPoints) {
@@ -52,7 +53,7 @@ function changePoints(addPoints) {
 		var actorsId = gapi.hangout.data.getState().myId;
 		var thisId = gapi.hangout.getLocalParticipantId();
 		pointArr[actorsId][0] = points;
-		pointArr[thisId][0] = parseInt(pointArr[actorsId][0],10) + addPoints;
+		pointArr[thisId][0] = parseInt(pointArr[actorsId][0], 10) + addPoints;
 		try {
 			//gapi.hangout.data.setValue("actorsChosen", JSON.stringify(data));
 			gapi.hangout.data.submitDelta({
@@ -112,29 +113,51 @@ function actorLeft() {
 
 function nextPlayer() {
 	console.log(JSON.parse(gapi.hangout.data.getState().pointsArray));
-	if (gameMode == "3ShotsEach" && currentRound >= maxRounds) {		
-		var endCheck = 0;
-		var pointArr = JSON.parse(gapi.hangout.data.getState().pointsArray);
+	console.log("NextPlayer method");
+	console.log(currentRound + " of " + maxRounds);
 
-		for (var i = 0; i < pointArr.length; i++) {
-			endCheck += pointArr[i][1];
+	if (gameMode == "3ShotsEach" && currentRound >= maxRounds * ((gapi.hangout.getEnabledParticipants().length) - 1)) {
+		console.log("3 shots each");
+		endCheck = 0;
+		var pointArr = JSON.parse(gapi.hangout.data.getState().pointsArray);
+		console.log(pointArr);
+		console.log(gapi.hangout.data.getState().pointsArray);
+		var endCheck = 0;
+		try {
+			var key, count = 0;
+			for (key in pointArr) {
+				count++;
+			}
+			console.log(count);
+			for (var i = 0; i < count; i++) {
+				endCheck += pointArr[gapi.hangout.getEnabledParticipants()[i].id][1];
+				console.log(pointArr[gapi.hangout.getEnabledParticipants()[i].id][1]);
+			}
+		} catch(e) {
+			console.log(e);
 		}
-		if (endCheck >= gapi.hangout.getEnabledParticipants().length * maxRounds) {
+		console.log(endCheck + "." + gapi.hangout.getEnabledParticipants().length * maxRounds);
+		if (endCheck >= (gapi.hangout.getEnabledParticipants().length * maxRounds)) {
 			setGameMode("finish");
 		}
 
-			sendCommand("nextPlayer");
-		
+		sendCommand("nextPlayer");
+
 		//check here if summation of points array values is elements*maxRounds. If it is, then globally set gamemode to finish.
 		//#whoyagonnacall
 		//var localId = JSON.parse(gapi.hangout.data.getState().pointsArray);
 		//localId[gapi.hangout.getLocalParticipantId()][1];
-	} else {
-		if (gameMode == "10RoundShootOut") {
+	} else if (gameMode == "10RoundShootOut") {
 			if (currentRound > maxRounds) {
 				setGameMode("finish");
 			}
 		}
+		else if (gameMode == "QuickFire"){
+			if (currentRound > maxRounds) {
+				setGameMode("finish");
+			}	
+		}
+		
 		var participants = gapi.hangout.getEnabledParticipants();
 		var theirId = gapi.hangout.data.getState().myId;
 
@@ -164,7 +187,7 @@ function nextPlayer() {
 			}
 		}
 	}
-}
+
 
 //swaps the content of the div to whatever you want in there.
 function contentSwap(selector) {
@@ -304,18 +327,18 @@ function GameSetup(modeToSetup) {
 	if (modeToSetup == "10RoundShootOut") {
 		pauseCountdown();
 		timeForRound = "";
-		maxRounds = 10;
+		maxRounds = 2; //10
 	}
 
 	if (modeToSetup == "3ShotsEach") {
 		pauseCountdown();
 		timeForRound = "";
-		maxRounds = 3;
+		maxRounds = 1; //3
 	}
 
 	if (modeToSetup == "QuickFire") {
 		timeForRound = "00:30";
-		maxRounds = 20;
+		maxRounds = 2; //20
 	}
 
 }
@@ -368,10 +391,10 @@ function charSelected(charNum) {
 		//startCountdown();
 	}
 	var incrementRound = parseInt(gapi.hangout.data.getState().roundCurrentCount, 10) + 1;
-		var localId = JSON.parse(gapi.hangout.data.getState().pointsArray);
-		console.log(localId);
-		console.log(gapi.hangout.getLocalParticipantId());
-		localId[gapi.hangout.getLocalParticipantId()][1] = parseInt(localId[gapi.hangout.getLocalParticipantId()][1],10)+1;
+	var localId = JSON.parse(gapi.hangout.data.getState().pointsArray);
+	console.log(localId);
+	console.log(gapi.hangout.getLocalParticipantId());
+	localId[gapi.hangout.getLocalParticipantId()][1] = parseInt(localId[gapi.hangout.getLocalParticipantId()][1], 10) + 1;
 
 	try {
 
@@ -384,9 +407,8 @@ function charSelected(charNum) {
 			roundCurrentCount : "" + incrementRound,
 			pointsArray : JSON.stringify(localId)
 		});
-//		console.log("shit got sent.");
-	}
-	catch(e) {
+		//		console.log("shit got sent.");
+	} catch(e) {
 		console.log("Problemz;" + e);
 	}
 
@@ -394,7 +416,7 @@ function charSelected(charNum) {
 	//push with data ID, transmission as data, and charSelected.
 	var responseString = "";
 	responseString += "<div id='contentWrapper'>";
-	responseString += "<div class = 'characters' id = 'char" + charNum + "' onclick=charSelected(" + charNum + ")><div class='nameInTitle' id='nameInTitle" + charNum + "'>";
+	responseString += "<div class = 'characters' id = 'char" + charNum + "'><div class='nameInTitle' id='nameInTitle" + charNum + "'>";
 	responseString += "<p>" + data.Actor[charNum] + " as " + data.Name[charNum] + " in " + data.Title[charNum] + ".</p></div>";
 	responseString += "<div class= 'bio' id='bio" + charNum + "'>";
 	if (data.Image[charNum] != 'null' && data.Image[charNum] != undefined) {
@@ -470,17 +492,18 @@ function retrieveActorsFromServer() {
 			document.getElementById("wrapper").innerHTML = insertString;
 			var increment = people;
 			//incrementing through array of classnames loaded
-			try{$('.image').load(function() {
-				increment--;
-				var w = $(this).width();
-				var h = $(this).height();
-				if (w >= h) {
-					document.getElementsByClassName("image")[increment].style.width = "200px";
-				} else if (w <= h) {
-					document.getElementsByClassName("image")[increment].style.height = "200px";
-				}
-			});}
-			catch(e){
+			try {
+				$('.image').load(function() {
+					increment--;
+					var w = $(this).width();
+					var h = $(this).height();
+					if (w >= h) {
+						document.getElementsByClassName("image")[increment].style.width = "200px";
+					} else if (w <= h) {
+						document.getElementsByClassName("image")[increment].style.height = "200px";
+					}
+				});
+			} catch(e) {
 				console.log(e);
 			}
 		}
@@ -503,9 +526,11 @@ function wrongGuess() {
 //method which reacts whenever the state changes
 function onStateChanged(event) {
 	//console.log("POINTS!!! "+points);
+	if(!gameFinished){
 	try {
-		console.log(JSON.parse(gapi.hangout.data.getState().pointsArray));
+		//console.log(JSON.parse(gapi.hangout.data.getState().pointsArray));
 		console.log(event);
+		console.log(gapi.hangout.data.getState().command);
 		//console.log(gapi.hangout.data.getState());
 		if (gapi.hangout.data.getState().command == "startCountdown") {
 			startCountdown();
@@ -524,6 +549,7 @@ function onStateChanged(event) {
 				}
 			} else {
 				console.log("game finishing???");
+				gameFinished = true;
 				contentSwap(endScreen);
 			}
 		}
@@ -563,22 +589,26 @@ function onStateChanged(event) {
 		}
 		if (gapi.hangout.data.getState().command == "nextPlayer") {
 			//console.log("SHIT IS GETTING DONE"+points);
-			if(mode==1){
-				try{
-				gapi.hangout.data.submitDelta({
-								actorsChosen : ""});
+			if (mode == 1) {
+				try {
+					gapi.hangout.data.submitDelta({
+						actorsChosen : ""
+					});
+				} catch(e) {
+					console.log(e);
 				}
-				catch(e){console.log(e);}
 			}
 			if (gameMode == "quickFire") {
 				pause = true;
 			}
 			if (gameMode == "3ShotsEach") {
-				try{
-				gapi.hangout.data.submitDelta({
-								actorsChosen : ""});
+				try {
+					gapi.hangout.data.submitDelta({
+						actorsChosen : ""
+					});
+				} catch(e) {
+					console.log(e);
 				}
-				catch(e){console.log(e);}
 				nextPlayer();
 			} else if (maxRounds > currentRound) {
 				nextPlayer();
@@ -637,6 +667,7 @@ function onStateChanged(event) {
 		//console.log("stateChanged triggered");
 		//console.log(gapi.hangout.data.getState().command + ":" + "command Issued");
 		if (gapi.hangout.data.getState().command == "forceChange") {
+
 			if (gapi.hangout.getLocalParticipantId() != gapi.hangout.data.getState().myId) {
 				if (gameMode == "QuickFire") {
 					startCountdown();
@@ -644,10 +675,27 @@ function onStateChanged(event) {
 				contentSwap(guessActor);
 				if (gapi.hangout.data.getState().charID != null && gapi.hangout.data.getState().charID != undefined) {
 					passedId = gapi.hangout.data.getState().charID;
-					parseData(JSON.parse(gapi.hangout.data.getState().actorsChosen));
+					try {
+						console.log("655");
+						console.log(gapi.hangout.data.getState().actorsChosen);
+						parseData(JSON.parse(gapi.hangout.data.getState().actorsChosen));
+					} catch(e) {
+						console.log(e.stack);
+						try {
+							parseData(JSON.parse(gapi.hangout.data.getState().actorsChosen));
+						} catch(e) {
+							console.log(e.stack);
+							contentSwap(guessActor);
+						}
+					}
 				}
 			}
-
+			if (mode == 1) {
+				gapi.hangout.data.submitDelta({
+					command : "",
+					actorsChosen : ""
+				});
+			}
 		}
 		if (mode == 0 && gapi.hangout.data.getState().command == "noChange") {
 			if (gapi.hangout.data.getState().command != "itGotGuessed") {
@@ -657,6 +705,7 @@ function onStateChanged(event) {
 		}
 	} catch(e) {
 		console.error(e.stack);
+	}
 	}
 }
 
@@ -680,6 +729,7 @@ function left(event) {
 /** Kick off the app. */
 function init() {
 	// When API is ready...
+	console.log("maybe something?");
 	gapi.hangout.onApiReady.add(function(eventObj) {
 		if (eventObj.isApiReady) {
 			try {
@@ -738,27 +788,27 @@ function init() {
 						}
 						console.log(gapi.hangout.data.getState().command);
 						if (gapi.hangout.data.getState().command == "" && gapi.hangout.getEnabledParticipants().length > 1) {
-								var localId = JSON.parse(gapi.hangout.data.getState().pointsArray);
-								console.log(localId);
-								console.log(gapi.hangout.getLocalParticipantId());
-								localId[gapi.hangout.getLocalParticipantId()] = [points, 0];
-								//console.log("COMMAND SENDING"+points);
-								gapi.hangout.data.submitDelta({
-									"pointsArray" : JSON.stringify(localId)
-								});
+							var localId = JSON.parse(gapi.hangout.data.getState().pointsArray);
+							console.log(localId);
+							console.log(gapi.hangout.getLocalParticipantId());
+							localId[gapi.hangout.getLocalParticipantId()] = [points, 0];
+							//console.log("COMMAND SENDING"+points);
+							gapi.hangout.data.submitDelta({
+								"pointsArray" : JSON.stringify(localId)
+							});
 							menuAfter = "<div id='postMenu'>" + localText.InputText[0].menuAfterText + "</div>";
 							contentSwap(menuAfter);
 
 						} else if (gapi.hangout.getEnabledParticipants().length > 1 && gapi.hangout.data.getState().GameMode != undefined) {
-						
-								var localId = JSON.parse(gapi.hangout.data.getState().pointsArray);
-								console.log(localId);
-								console.log(gapi.hangout.getLocalParticipantId());
-								localId[gapi.hangout.getLocalParticipantId()] = [points, 0];
-								//console.log("COMMAND SENDING"+points);
-								gapi.hangout.data.submitDelta({
-									"pointsArray" : JSON.stringify(localId)
-								});
+
+							var localId = JSON.parse(gapi.hangout.data.getState().pointsArray);
+							console.log(localId);
+							console.log(gapi.hangout.getLocalParticipantId());
+							localId[gapi.hangout.getLocalParticipantId()] = [points, 0];
+							//console.log("COMMAND SENDING"+points);
+							gapi.hangout.data.submitDelta({
+								"pointsArray" : JSON.stringify(localId)
+							});
 							console.log("is this happening?");
 							gameMode = gapi.hangout.data.getState().GameMode;
 							GameSetup(gameMode);
@@ -772,16 +822,16 @@ function init() {
 				});
 
 				if (gapi.hangout.data.getState().command == "forceChange" && gapi.hangout.getEnabledParticipants().length > 1) {
-					
+
 					var localId = JSON.parse(gapi.hangout.data.getState().pointsArray);
-								console.log(localId);
-								console.log(gapi.hangout.getLocalParticipantId());
-								localId[gapi.hangout.getLocalParticipantId()] = [points, 0];
-								//console.log("COMMAND SENDING"+points);
-								gapi.hangout.data.submitDelta({
-									"pointsArray" : JSON.stringify(localId)
-								});
-					
+					console.log(localId);
+					console.log(gapi.hangout.getLocalParticipantId());
+					localId[gapi.hangout.getLocalParticipantId()] = [points, 0];
+					//console.log("COMMAND SENDING"+points);
+					gapi.hangout.data.submitDelta({
+						"pointsArray" : JSON.stringify(localId)
+					});
+
 					gameMode = gapi.hangout.data.getState().GameMode;
 					GameSetup(gameMode);
 					contentSwap(guessActor);
