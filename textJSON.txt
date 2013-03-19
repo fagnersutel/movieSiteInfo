@@ -22,7 +22,7 @@
 	"InputText" : [{
 	"menuAfterText": "Hi there! We're just waiting on a game mode to be picked.",
 	"outOfTimeText": "We're sorry, the timer ran out while we were waiting for you to make your point.",
-	"endScreenText": "Game Finished, congratulations!"
+	"endScreenText": 'Game Finished, here\'s how you all shaped up!<div id="winners"></div><input type="button" value="Re-start Game!" onclick="reset(gapi.hangout.getLocalParticipantId())">'
 	}]
 }
 
