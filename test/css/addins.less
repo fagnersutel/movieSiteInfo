@@ -1,0 +1,156 @@
+@font-face {
+   
+}
+
+body{
+  font-family: 'Helvetica Neue','Helvetica','Arial' !important;
+  color:rgba(55,47,43,1);
+font-weight: bold;
+font-style: normal;
+    width:100%;
+position:absolute;
+p{
+    color : rgba(95,95,95,1);
+    }
+.hidden{
+display:none;    
+}
+.btn{
+border-radius:30px;    
+background: #3272a6; /* for non-css3 browsers */
+
+filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#3b86c4', endColorstr='#165181'); /* for IE */
+background: -webkit-gradient(linear, left top, left bottom, from(#3b86c4), to(#165181)); /* for webkit browsers */
+background: -moz-linear-gradient(top,  #3b86c4,  #165181); /* for firefox 3.6+ */
+}
+.btn-large{
+     text-shadow: 1px 0px 2px #111144;
+    padding: 0 32px 0 32px;
+    height:40px;
+    font-size:18px;
+    font-weight:bold;
+    }
+.btn-small{
+     text-shadow: 1px 0px 1px #111144;
+    padding: 0 18px 0 18px;
+    height:30px;
+    font-size:16px;
+    font-weight:bold;
+    }
+#fadescreen{
+    position:relative;
+    top:0px;
+    left:0px;
+  //  width:300px;
+//    height:100%;
+    
+    }
+#container{
+      overflow:hidden;
+        width:300px;
+        height:500px;
+    #pointSet{
+        float:left;
+    }
+    #time{
+        float:right;
+    }
+    #wrapper{
+        ul{
+                 width:100%;
+                float:left;
+                margin : 0 0 0 0;
+                list-style:none;   
+                     li{
+                        padding :5px 0 5px 0;
+                        width:100%;
+                        float:left;
+                        .gameModes{
+                            .gameTitle{
+                                h2{
+                                    margin-top:0px;
+                                    }
+                                }
+                            .gameDescription{
+                                    margin-bottom:10px;
+                                }
+                            }
+                     }
+                }
+     float:left;
+        width:100%;
+       // height:100%;
+        margin: 10px 0 10px 0;
+       //PASTE BACK HERE
+        #contentWrapper{
+            overflow-y:scoll;
+            ul{
+            
+                width:100%;
+                float:left;
+                margin : 0 0 0 0;
+                list-style:none;
+                    li{
+                        padding :5px 0 5px 0;
+                        width:100%;
+                        float:left;
+                            a{
+                                color:inherit;
+                                text-decoration:inherit; 
+                                }
+                            a:hover{
+                                cursor : pointer;
+                                color:#1abc9c
+                                }
+                        }
+                }
+            }
+            #userDisplay{
+                height:100%;
+                overflow-y:scroll;
+                }
+             #scrollWrapper{
+            float:left;
+            height:80%;
+            overflow-y:scroll;
+        .characters{
+            
+            }
+        }
+        #winners{
+            ul{
+                width:100%;
+                float:left;
+                margin:0 0 20px 0;
+                list-style:none;
+                    li{
+                        padding :5px 0 5px 0;
+                        width:100%;
+                      float:left;
+                        .player{
+                        width:40%;
+                              float:left;
+                            }
+                        .points{
+                            text-align:right;
+                            width:40%;
+                              float:left;
+                            }    
+                        }
+                }
+            
+        }
+      
+        .characters{
+            .nameInTitle{
+                }
+                .bio{
+                        p{
+                        }
+                    img{
+                        }
+                    }
+            }
+        }  
+    }
+}

@@ -1,0 +1,17 @@
+/* CSS crunched with Crunch - http://crunchapp.net/ */
+@font-face{}body{font-family:'Helvetica Neue','Helvetica','Arial' !important;color:#372f2b;font-weight:bold;font-style:normal;width:100%;position:absolute;}body p{color:#5f5f5f;}
+body .hidden{display:none;}
+body .btn{border-radius:30px;background:#3272a6;filter:progid:dximagetransform.microsoft.gradient(startColorstr='#3b86c4', endColorstr='#165181');background:-webkit-gradient(linear, left top, left bottom, from(#3b86c4), to(#165181));background:-moz-linear-gradient(top, #3b86c4, #165181);}
+body .btn-large{text-shadow:1px 0px 2px #111144;padding:0 32px 0 32px;height:40px;font-size:18px;font-weight:bold;}
+body .btn-small{text-shadow:1px 0px 1px #111144;padding:0 18px 0 18px;height:30px;font-size:16px;font-weight:bold;}
+body #fadescreen{position:relative;top:0px;left:0px;}
+body #container{overflow:hidden;width:300px;height:500px;}body #container #pointSet{float:left;}
+body #container #time{float:right;}
+body #container #wrapper{float:left;width:100%;margin:10px 0 10px 0;}body #container #wrapper ul{width:100%;float:left;margin:0 0 0 0;list-style:none;}body #container #wrapper ul li{padding:5px 0 5px 0;width:100%;float:left;}body #container #wrapper ul li .gameModes .gameTitle h2{margin-top:0px;}
+body #container #wrapper ul li .gameModes .gameDescription{margin-bottom:10px;}
+body #container #wrapper #contentWrapper{overflow-y:scoll;}body #container #wrapper #contentWrapper ul{width:100%;float:left;margin:0 0 0 0;list-style:none;}body #container #wrapper #contentWrapper ul li{padding:5px 0 5px 0;width:100%;float:left;}body #container #wrapper #contentWrapper ul li a{color:inherit;text-decoration:inherit;}
+body #container #wrapper #contentWrapper ul li a:hover{cursor:pointer;color:#1abc9c;}
+body #container #wrapper #userDisplay{height:100%;overflow-y:scroll;}
+body #container #wrapper #scrollWrapper{float:left;height:80%;overflow-y:scroll;}
+body #container #wrapper #winners ul{width:100%;float:left;margin:0 0 20px 0;list-style:none;}body #container #wrapper #winners ul li{padding:5px 0 5px 0;width:100%;float:left;}body #container #wrapper #winners ul li .player{width:40%;float:left;}
+body #container #wrapper #winners ul li .points{text-align:right;width:40%;float:left;}
