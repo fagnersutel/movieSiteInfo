@@ -23,7 +23,8 @@
 		"waitingForInformation" : '<div id="waitingForInfo"><h2>We\'re waiting for information. </h2></div><div class="loading"><div class="spinner"><div class="mask"><div class="maskedCircle"></div></div></div></div>',
 		"menuAfterText": "Hi there! We're just waiting on a game mode to be picked.",
 		"outOfTimeText": "We're sorry, the timer ran out while we were waiting for you to make your point.",
-		"endScreenText": '<div id="wrapper"><div id="winWrapper"><h3>Game Over, well done!</h3><div id="winners"></div><button class="btn btn-large" onclick="reset(gapi.hangout.getLocalParticipantId())">Restart Game</button></div></div>'
+		"endScreenText": '<div id="wrapper"><div id="winWrapper"><h3>Game Over, well done!</h3><div id="winners"></div><button class="btn btn-large" onclick="reset(gapi.hangout.getLocalParticipantId())">Restart Game</button></div></div>',
+		"waitMessage" : "Please wait while the Actor decides who they want to portray."
 	}]
 }
 

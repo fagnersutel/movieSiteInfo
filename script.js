@@ -32,9 +32,10 @@ var menuAfter;
 //things that get pulled in
 var waitingForInfo = "Waiting for server-side response :-)";
 //gets pulled in.
-var startScreen = "<div id='fadescreen'></div><div id='pointSet'></div><div id='wrapper'></div><input type='button' value='Oh! Me First!' onclick='contentSwap(selectCharacterScreen)'><input type='button' value='I\'ll guess...' onclick = 'contentSwap(guessActor)'><input type='button' value='lol' onclick='forfeit()'>";
-var guessActor = '<div id="pointSet"></div><div id="time">' + timeForRound + '</div><div id="wrapper"><div id="contentWrapper"><p> Waiting for the charade master to make his choice.</p></div></div>';
-var selectCharacterScreen = '<div id="fadescreen"></div><div id="pointSet"></div><div id="time">' + timeForRound + '</div><div id="wrapper"><div id="contentWrapper"></div></div>';
+var contentWhileWait = " Waiting for the charade master to make his choice.";
+var startScreen = "<div id='fadescreen'></div><div id='pointSet'></div><div id='wrapper' class=' '></div><input type='button' value='Oh! Me First!' onclick='contentSwap(selectCharacterScreen)'><input type='button' value='I\'ll guess...' onclick = 'contentSwap(guessActor)'><input type='button' value='lol' onclick='forfeit()'>";
+var guessActor = '<div id="pointSet"></div><div id="time">' + timeForRound + '</div><div id="wrapper"class=" "><div id="contentWrapper"><p id="waiting">'+contentWhileWait+'</p></div></div>';
+var selectCharacterScreen = '<div id="fadescreen"></div><div id="pointSet"></div><div id="time">' + timeForRound + '</div><div id="wrapper"class=" "><div id="contentWrapper"></div></div>';
 var endScreen;
 var outOfTime;
 var currentRound = 0;
@@ -77,8 +78,6 @@ function pointsSorter(JSONinfo) {
 	var domString = "";
 	var points = [];
 	var name = [];
-	var participants = gapi.hangout.getEnabledParticipants();
-	console.log(participants);
 	for (var key in JSONinfo) {
 		//    console.log("Key: " + key);
 		name.push(key);
@@ -86,18 +85,11 @@ function pointsSorter(JSONinfo) {
 
 		//   console.log("Value: " + JSONinfo[key][0]);
 	}
-
-	for (var i = 0; i < name.length; i++) {
-		for (var j = 0; j < participants.length; j++) {
-			if (name[i] == participants[j].id) {
-				name[i] = participants[j].person.displayName;
-			}
-		}
-	}
 	bubble_srt(points, name);
 	console.log(points);
 	console.log(name);
 	domString += "<ul>";
+	domString += "<li><div class='player bold'>Player</div><div class='points bold'>Points</div>";
 	for (var i = 0; i < points.length; i++) {
 		domString += "<li><div class='player'>" + name[i] + "</div><div class='points'>" + points[i] + "</div>";
 	}
@@ -107,7 +99,7 @@ function pointsSorter(JSONinfo) {
 }
 
 function bubble_srt(a, b) {
-	//basic bubble sort sorting the 'a' array and shuffling around
+		//basic bubble sort sorting the 'a' array and shuffling around
 	//the b array to match the a array.
 	var n = a.length;
 	var i;
@@ -445,19 +437,21 @@ function GameSetup(modeToSetup) {
 //-------------------------------------USERCENTRIC TWADDLE---------------------------------------------------
 //processes the JSON information once it has been received by the client.
 function parseData(response) {
-	var insertThing = "";
+	console.log(response);
+	var insertThing = "<div id='userDisplay'><ul>";
 	for (var i = 0; i < response.Title.length; i++) {
-		insertThing += "<a onclick=guessSelected(" + i + ")><div class = 'characters' id = 'char" + i + "'><div class='nameInTitle' id='nameInTitle" + i + "'>";
-		insertThing += "<p>" + response.Actor[i] + " as " + response.Name[i] + " in " + response.Title[i] + ".</p></div>";
+		insertThing += "<li class='list characters' id = 'char" + i + "' onclick=selectButton('guessSelected'," + i + ")><div class='nameInTitle' id='nameInTitle" + i + "'>";
+		insertThing += "<p>"+ response.Name[i] +" played by " + response.Actor[i] + " in " + response.Title[i] + ".</p></div>";
 		insertThing += "<div class= 'bio' id='bio" + i + "''>";
 		if (response.Image[i] != 'null' && response.Image[i] != undefined) {
 			//	insertThing += "<img class='image' align='left' id= 'img" + i + "' src='" + response.Image[i] + "'>";
 		}
 		insertThing += "<p class='hidden'>" + response.Bio[i] + "</p>";
 		insertThing += "</div>";
-		insertThing += "</div></a>";
 
 	}
+	insertThing += "</ul></div>";
+	document.getElementById("container").innerHTML = '<div id="pointSet">' + points + '</div>' + '<div id="SelectPlayerButton" ></div>'+'<div id="time">' + timeForRound + '</div>' +"<div id='wrapper'class=' '><div id='contentWrapper'></div></div>";
 	document.getElementById("contentWrapper").innerHTML = insertThing;
 }
 
@@ -465,6 +459,7 @@ function parseData(response) {
 function guessSelected(idOfGuess) {
 	////console.log("THING1:"+idOfGuess);
 	////console.log("THING2:"+passedId);
+	var element = document.getElementById("ButtonSelect"); element.parentNode.removeChild(element);
 	if (idOfGuess == parseInt(passedId)) {
 		document.getElementById("contentWrapper").innerHTML = "You're an awesome person for being right, go you!";
 		changePoints(1);
@@ -513,20 +508,24 @@ function charSelected(charNum) {
 
 	//push to other clients of thingy at this point with all possible choices.
 	//push with data ID, transmission as data, and charSelected.
+
+var element = document.getElementById("ButtonSelect"); element.parentNode.removeChild(element);
+	//push to other clients of thingy at this point with all possible choices.
+	//push with data ID, transmission as data, and charSelected.
 	var responseString = "";
 	responseString += "<div id='contentWrapper'>";
 	responseString += "<div class = 'characters' id = 'char" + charNum + "'><div class='nameInTitle' id='nameInTitle" + charNum + "'>";
-	responseString += "<p>" + data.Actor[charNum] + " as " + data.Name[charNum] + " in " + data.Title[charNum] + ".</p></div>";
+	responseString += "<p><span class='bold'>" + data.Name[charNum] + "</span> played by " + data.Actor[charNum] + " in " + data.Title[charNum] + ".</p></div>";
 	responseString += "<div class= 'bio' id='bio" + charNum + "'>";
 	if (data.Image[charNum] != 'null' && data.Image[charNum] != undefined) {
-		responseString += "<p><img class='image' align='left' id= 'img" + charNum + "' src='" + data.Image[charNum] + "'>";
+		responseString += "<img class='image fullBio' align='left' id= 'img" + charNum + "' src='" + data.Image[charNum] + "'><p>";
 	}
 	if (data.Bio[charNum] != 'null') {
 		if (data.Bio[charNum] != undefined) {
 			if (data.Image[charNum] == 'null' || data.Image[charNum] == undefined) {
-				responseString += "<p>";
+				responseString += "<p id='charBioLongForm'>";
 			}
-			responseString += data.Bio[charNum] + "</p>";
+			responseString += data.Bio[charNum] + "...</p>";
 		}
 	}
 	responseString += "</div>";
@@ -534,10 +533,30 @@ function charSelected(charNum) {
 	responseString += "</div>";
 	//responseString += '<input type="button" value="Start Timer!" id="startTimer" onclick="sendCommand(\'startCountdown\')">';
 	//responseString += '<input type="button" value="pause" onclick="sendCommand(\'pauseCountdown\')">';
-	document.getElementById('wrapper').innerHTML = responseString;
+	document.getElementById('wrapper').innerHTML = "<div id='scrollWrapper'>"+responseString+"</div>"
+
+
+
 	if (timeForRound != "") {
 		console.log("thisThing");
 		sendCommand("startCountdown");
+	}
+}
+function selectButton(method, index){
+	var charNames = document.getElementsByClassName("characters darkened");
+		console.log(charNames);
+		for(var i = 0; i < charNames.length; i++){
+			console.log(i);
+			charNames[i].className="list characters";
+		}
+		document.getElementById("char"+index).className="characters darkened";
+	if(method=="charSelected"){//
+		document.getElementById("SelectPlayerButton").innerHTML = '<button id="ButtonSelect" class="btn btn-small" onclick="'
+			+'charSelected('+index+')">Select Me</button>';
+	}
+	if(method=="guessSelected"){//
+		document.getElementById("SelectPlayerButton").innerHTML = '<button id="ButtonSelect" class="btn btn-small" onclick="'
+			+'guessSelected('+index+')">Select Me</button>';
 	}
 }
 
@@ -557,9 +576,9 @@ function retrieveActorsFromServer() {
 	if (mode == 1) {
 		pauseCountdown();
 	}
-	document.getElementById("container").innerHTML = "<div id='pointSet'></div><div id='wrapper'></div>";
+	document.getElementById("container").innerHTML = "<div id='pointSet'></div><div id='wrapper'class=' '></div>";
 	document.getElementById("pointSet").innerHTML = points;
-	document.getElementById("wrapper").innerHTML = "We're waiting for information from the server :-)";
+	document.getElementById("wrapper").innerHTML = waitingForInfo;
 	//document.getElementById('points').innerHTML = (10 - document.getElementById("numVal").value) * 1000;
 	$.ajax({
 		url : "https://dev.welikepie.com:444/movieSiteInfo/gather.php?difficulty=" + people + "&jsoncallback=?",
@@ -568,8 +587,13 @@ function retrieveActorsFromServer() {
 			data = response;
 			//Actor, Name, Title, Image, Bio
 			document.getElementById("wrapper").innerHTML = "";
-			document.getElementById("container").innerHTML = '<div id="pointSet">' + points + '</div>' + '<div id="time">' + timeForRound + '</div>' + '<div id="wrapper"></div>' + '<input type="button" value="Forfeit Round!" id="forfeitRound" onclick="forfeit()">';
-			var insertString = "<div id='contentWrapper'>";
+			document.getElementById("container").innerHTML = '<div id="pointSet">' + points + '</div>' + '<div id="time">' + timeForRound + '</div>' + '<div id="wrapper"class=" "></div>' + '<input type="button" value="Forfeit Round!" id="forfeitRound" onclick="forfeit()">';
+			var insertString;
+	var response = data;
+			//Actor, Name, Title, Image, Bio
+			document.getElementById("wrapper").innerHTML = "";
+			document.getElementById("container").innerHTML = '<div id="pointSet">' + points + '</div>' + '<div id="SelectPlayerButton" ></div>'+'<div id="time">' + timeForRound + '</div>' + '<div id="wrapper"class=" "></div>' + '<input type="button" class="btn btn-large" value="Forfeit Round!" id="forfeitRound" onclick="forfeit()">';
+			insertString = "<div id='contentWrapper' ><ul>";
 			console.log("receiving information");
 			for (var i = 0; i < response.Title.length; i++) {
 				if (response.Bio[i] != null) {
@@ -577,30 +601,28 @@ function retrieveActorsFromServer() {
 						response.Bio[i] = response.Bio[i].substring(0, 1000) + "...";
 					}
 				}
-				insertString += "<div class = 'characters' id = 'char" + i + "'>";
-				insertString += "<a onclick=charSelected(" + i + ")>";
+				insertString += "<li class='list characters' id = 'char" + i + "' onclick=selectButton('charSelected'," + i + ")>";
 				insertString += "<div class='nameInTitle' id='nameInTitle" + i + "'>";
-				insertString += "<p>" + response.Actor[i] + " as " + response.Name[i] + " in " + response.Title[i] + ".</p></div>";
+				insertString += "<p><span class='bold'>" + data.Name[i] + "</span> played by " + data.Actor[i] + " in " + data.Title[i] + ".</p></div>";
+
 				if (response.Image[i] != 'null' && response.Image[i] != undefined) {
 					insertString += "<img class='image' id= 'img" + i + "' src='" + response.Image[i] + "'>";
 				}
-				insertString += "</a>";
-				insertString += "</div>";
 			}
-			insertString += '</div>';
-			document.getElementById("wrapper").innerHTML = insertString;
+			insertString += '</ul></div>';
+			document.getElementById("wrapper").innerHTML =  "<div id='scrollWrapper'class='bottomBump'>"+insertString+"</div>";
 			var increment = people;
 			//incrementing through array of classnames loaded
 			try {
 				$('.image').load(function() {
-					increment--;
+					/*increment--;
 					var w = $(this).width();
 					var h = $(this).height();
-					if (w >= h) {
-						document.getElementsByClassName("image")[increment].style.width = "200px";
-					} else if (w <= h) {
-						document.getElementsByClassName("image")[increment].style.height = "200px";
-					}
+					if (w >= h) {*/
+						document.getElementsByClassName("image")[increment].style.width = "273px";
+//					} else if (w <= h) {
+		//				document.getElementsByClassName("image")[increment].style.height = "200px";
+	//				}
 				});
 			} catch(e) {
 				console.log(e);
@@ -753,7 +775,7 @@ function onStateChanged(event) {
 								}
 								//console.log("COMMAND SENDING"+points);
 								gapi.hangout.data.submitDelta({
-									actorsChosen : "",
+									//actorsChosen : "",
 									command : "nextPlayer",
 									charID : "",
 									myId : gapi.hangout.getLocalParticipantId()
@@ -803,7 +825,7 @@ function onStateChanged(event) {
 				if (mode == 1) {
 					gapi.hangout.data.submitDelta({
 						command : "",
-						actorsChosen : ""
+						//actorsChosen : ""
 					});
 				}
 			}
@@ -882,24 +904,34 @@ function init() {
 				gapi.hangout.data.onMessageReceived.add(onMessageReceived);
 				gapi.hangout.onParticipantsDisabled.add(left);
 
-				$.ajax({
+			var menuText = "";
+					$.ajax({
 					url : "https://dev.welikepie.com:444/movieSiteInfo/getJSON.php?json=textJSON.txt&jsoncallback=?",
 					dataType : 'jsonp',
+					async : false,
 					success : function(response) {
 						localText = response;
-
-						var menuText = "<div id='wrapper'>";
+						menuText += "<div id='wrapper'class=' '><ul id='menuItems'>";
+						
 						for (var i = 0; i < localText.GameModes.length; i++) {
-							menuText += "<div class = 'gameModes' id='" + localText.GameModes[i].id + "'>";
-							menuText += "<div class = 'gameTitle'>" + localText.GameModes[i].Title + "</div>"
-							menuText += "<div class = 'gameDescription'>" + localText.GameModes[i].Description + "</div>";
-							menuText += "<button class = 'gameButtons' id='" + localText.GameModes[i].id + "button'onclick='setGameMode(\"" + localText.GameModes[i].id + "\")'>" + localText.GameModes[i].ButtonText + "</button>";
+							menuText += "<li class='bottomBump'><div class = 'gameModes' id='" + localText.GameModes[i].id + "'>";
+							menuText += "<div class = 'gameTitle'><h2>" + localText.GameModes[i].Title + "</h2></div>"
+							menuText += "<div class = 'gameDescription'><p>" + localText.GameModes[i].Description + "</p></div>";
+			//				menuText += "<input type='button' class = 'btn btn-mini gameButtons' id='" + localText.GameModes[i].id + "button'onclick='setGameMode(\"" + localText.GameModes[i].id + "\")' value='"+localText.GameModes[i].ButtonText+"'>";
+							menuText += "<input type='button' class = 'btn btn-small gameButtons topBump' id='" + localText.GameModes[i].id + "button'onclick='setGameMode(\"" + localText.GameModes[i].id + "\")' value='Start Game'>";
+			
 							menuText += "</div>"
 						}
-						menuText += "</div>";
+						menuText += "</ul></div>";
 						menuFirstIn = menuText;
 						outOfTime = "<div id='contentWrapper'><div id='timeFinished'>" + localText.InputText[0].outOfTimeText + "</div></div>";
 						endScreen = "<div id='done'>" + localText.InputText[0].endScreenText + "</div>";
+						waitingForInfo = localText.InputText[0].waitingForInformation;
+						contentWhileWait = localText.InputText[0].waitMessage;
+						//}
+						
+						
+						//});
 						try {
 							currentRound = 0;
 							var localId = {};
@@ -910,6 +942,7 @@ function init() {
 								"command" : ""
 							});
 							console.log("pointsArray sent!");
+							console.log(gapi,hangout.getState());
 						} catch(e) {
 							console.log("We failed on start." + e);
 						}
@@ -946,7 +979,9 @@ function init() {
 							waitingForInfo = localText.InputText[0].waitingForInformation;
 							if(gapi.hangout.data.getState().GameMode != undefined && gapi.hangout.data.getState().actorsChosen != ""){
 								gameMode = gapi.hangout.data.getState().GameMode;
-								parseData(JSONarr.parse(gapi.hangout.data.getState().actorsChosen));
+								passedId = gapi.hangout.data.getState().charID;
+								console.log(JSON.parse(gapi.hangout.data.getState().actorsChosen));
+								parseData(JSON.parse(gapi.hangout.data.getState().actorsChosen));
 							}
 							else{
 							contentSwap(menuAfter);

@@ -5,6 +5,10 @@ var people = 5;
 var points = 10;
 var timeForRound = "01:30";
 var data;
+var testData = {"Image":["http://ia.media-imdb.com/images/M/MV5BMTk1MDY1NjE4OF5BMl5BanBnXkFtZTcwMzEyMzE0NA@@._V1._SX640_SY899_.jpg","http://ia.media-imdb.com/images/M/MV5BMTMxMTIwMzAyM15BMl5BanBnXkFtZTYwNTQwNzc3._V1._SX450_SY304_.jpg","http://ia.media-imdb.com/images/M/MV5BMTUwNzkyODA0N15BMl5BanBnXkFtZTYwODc0Mzk2._V1._SX400_SY267_.jpg","http://ia.media-imdb.com/images/M/MV5BNjUyODI5MzQyOV5BMl5BanBnXkFtZTcwNTgwMzMzMw@@._V1._SX640_SY951_.jpg","http://ia.media-imdb.com/images/M/MV5BMTM2MjIzNjE5N15BMl5BanBnXkFtZTYwMDUwMzI2._V1._SX420_SY335_.jpg"],"Name":["David 'Noodles' Aaronson","Leonard Shelby","Carolyn Burnham","WALLE\n / \nM-O\n\n (voice)","Rocco Lampone"],"Actor":["Robert De Niro","Guy Pearce","Annette Bening","Ben Burtt","Tom Rosqui"],"Title":["Once Upon a Time in America","Memento","American Beauty","WALLE","The Godfather: Part II"],"Bio":["David Aaronson is a fictional Jewish gangster featured as the protagonist of the book The Hoods by Harry Grey, and later in the book's film adaptation, Once Upon A Time In America.David Aaronson was born in the early 1900s presumably either 1905 or 1907. He was born into poverty and squalor in a Jewish enclave in Brooklyn, New York City.David Aaronson later formed a gang with his friends Phillip \"Cock Eye\" Stein, Patrick \"Patsy\" Goldberg and a young boy named Dominic. Together they rolled drunks in a bar run by a local mobster named Bugsy that they worked for and helped in maintaining his protection racket.In 1921 David \"Noodles\" Aaronson and his gang were about to roll a drunk when Maximillian \"Max\" Bercovicz takes their chance by helping the drunk onto the back of his carridge and pretending to know him. Noodles later came across Max as he was moving into his new house. Max and Noodles size each other up and Max flaunts the pocket watch he stole from the drunk which Noodles then stea...","Leonard Shelby is a man with anterograde amnesia which renders his brain unable to store new memories. He takes photos to reach his aim which is killing his wife murderer .","Carolyn Burnham Wife of Lester, and real-estate agent. Sees her acquaintance Buddy Kane at a party, and wants to get closer with him. Catches her husband masturbating in bed with her, and they have a heated discussion about their dysfunctional relationship. Goes to lunch with Buddy, then to a motel to have sex with him. At home that night she gets into an argument with Lester at the dinner table, then goes to apologize to her daughter, but gets frustrated with her and slaps her in the face. Goes to a shooting range, then drives home to argue with Lester about a new car that he bought. He comes on to her but she finds another reason to yell at him. Her husband Lester, while working at a fast-food drive-thru, sees her kissing Buddy while driving through the fast-food place. Drives away to drop buddy off, then cries and screams in guilt. Begins rationalizing with herself, and grabs the gun from her glove compartment and proceeds to drive home and confront her husband. Before she enters th...","WALLE (short for Waste Allocation Lift Loader, Earth-Class) is the only robot of his kind left on Earth after a botched attempt at trying to clean the trash-covered planet. The WALLE units were left behind to clean the planet while humanity enjoyed a 5-year cruise. Before the last of the humans left Earth for good, claiming operation Cleanup wasn't working, they forgot to turn WALLE off. The 5-year cruise became a 700-year cruise with humans content to remain in space, waited on hand and foot by an army of robots care of the Buy N Large corporation. After 700 years of continuing his directive, i.e. cleaning the planet, WALL\"E developed one little glitch: a personality. He is extremely curious, friendly to his pet cockroach, Hal, and even a little bit lonely.He was played by Ben Burtt (original movie) and Later Dane A. Davis (for prequel and sequel).During the events of WALLE (2008), this robot meets a beautiful young probe named EVE. WALLE immediately falls in love with her and de...","Peter Clemenza (1890 - 1958) is a fictional character appearing in Mario Puzo's novel The Godfather and two of the three films based on it.In his young adulthood, in The Godfather Part II, Clemenza is portrayed by Bruno Kirby. In his later years, he is portrayed by Richard S. Castellano.Peter Clemenza is one of two (later three) caporegimes in the Corleone Family (the other being Salvatore Tessio). He rules over the family's territory in The Bronx. Although he is less intelligent than his friend and counterpart Tessio, he is said to be more brutal and direct in the book. In the film, he may be perceived at first as a fat, dim witted thug, but later on he is shown to be a formidable assassin.Clemenza became a friend of Vito Corleone after immigrating from Sicily, when Corleone held a package of guns for him to prevent their discovery by the police. Although he is a native of Italy, and in The Godfather II is shown speaking perfect colloquial Italian as a young man in his 20s, in The God..."]};
+var testData2 = {Thing:[1,2]};
+var thing = eval(testData2);
+console.log(testData["Title"].length);
 //pointsSorter(JSONarr);
 //jsonOrganiser(JSONarr);
 //dataPopulate(10);//populates data field.
@@ -17,7 +21,7 @@ $.ajax({
 	}
 	
 })
-//||CHARACTER played by ACTOR in FILM
+//CHARACTER played by ACTOR in FILM
 //||Character bold.
 //||make images full width
 //||get default stylings through
@@ -33,9 +37,11 @@ $.ajax({
 
 //document.getElementById("container").innerHTML = mainMenu();
 //document.getElementById("wrapper").innerHTML = waiting();
-actorSelect(10); //num is indicative of how many actors to pull through
+//actorSelect(10); //num is indicative of how many actors to pull through
 //parseData(10); //brings up what other players see.
 //winner(JSONarr);
+
+parseData(testData);
 
 
 function winner(JSONinfo) {
@@ -95,9 +101,9 @@ function guessSelected(num){
 	console.log("were you playing, you'd've selected "+num);
 }
 
-function parseData(num) {
-	dataPopulate(num)
-	var response = data;
+function parseData(information) {
+//	dataPopulate(num)
+	var response = information;
 	var insertThing = "<div id='userDisplay'><ul>";
 	for (var i = 0; i < response.Title.length; i++) {
 		insertThing += "<li class='list characters' id = 'char" + i + "' onclick=selectButton('guessSelected'," + i + ")><div class='nameInTitle' id='nameInTitle" + i + "'>";
@@ -155,12 +161,12 @@ function selectButton(method, index){
 		}
 		document.getElementById("char"+index).className="characters darkened";
 	if(method=="charSelected"){//
-		document.getElementById("SelectPlayerButton").innerHTML = '<button id="ButtonSelect" class="btn btn-small" onclick="(function(){'
-			+'charSelected('+index+');'+'})();">Select Me</button>';
+		document.getElementById("SelectPlayerButton").innerHTML = '<button id="ButtonSelect" class="btn btn-small" onclick="'
+			+'charSelected('+index+')">Select Me</button>';
 	}
 	if(method=="guessSelected"){//
-		document.getElementById("SelectPlayerButton").innerHTML = '<button id="ButtonSelect" class="btn btn-small" onclick="(function(){'
-			+'guessSelected('+index+');})();">Select Me</button>';
+		document.getElementById("SelectPlayerButton").innerHTML = '<button id="ButtonSelect" class="btn btn-small" onclick="'
+			+'guessSelected('+index+')">Select Me</button>';
 	}
 }
 

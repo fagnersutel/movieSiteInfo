@@ -10,7 +10,7 @@ body .btn:hover{background:#165181;background:-webkit-gradient(linear, left top,
 body .btn-large{padding-top:0px;text-shadow:1px 0px 2px #111144;padding:0px 32px 0px 32px !important;height:38px;font-size:16px;font-weight:bold;}
 body .btn-small{text-shadow:1px 0px 1px #111144;padding:0 18px 0 18px;height:26px;font-size:14px;font-weight:bold;}
 body #fadescreen{position:relative;top:0px;left:0px;}
-body #container{padding:10px 0 10px 0 !important;overflow:hidden;width:300px;height:600px;}body #container #forfeitRound{float:left;margin:0 0 0 5px;}
+body #container{padding:10px 0 10px 0 !important;overflow:hidden;width:300px;height:450px;}body #container #forfeitRound{float:left;margin:0 0 0 5px;}
 body #container #pointSet{font-size:18px;font-weight:bold;float:left;width:30px;margin-left:5px;}
 body #container #SelectPlayerButton{float:left;margin-left:60px;}
 body #container #time{font-size:18px;font-weight:bold;float:right;margin-right:10px;}
@@ -20,7 +20,8 @@ body #container #wrapper .loading{float:left;width:48px;height:48px;margin:30px 
 body #container #wrapper .loading .mask{width:32px;height:32px;overflow:hidden;}
 body #container #wrapper .loading .spinner{width:46px;height:46px;-webkit-animation:spin 1s infinite linear;animation:spin 1s infinite linear;}
 body #container #wrapper ul{width:100%;float:left;margin:0 0 0 0;list-style:none;}body #container #wrapper ul li{padding:5px 0 5px 0;width:100%;float:left;}body #container #wrapper ul li .gameModes .gameTitle h2{margin-top:0px;}
-body #container #wrapper #contentWrapper{overflow-y:scoll;overflow-x:hidden;}body #container #wrapper #contentWrapper ul{width:100%;float:left;margin:0 0 0 0;list-style:none;}body #container #wrapper #contentWrapper ul li{border-top:2px solid #5f5f5f;width:100%;float:left;}body #container #wrapper #contentWrapper ul li a{color:inherit;text-decoration:inherit;}body #container #wrapper #contentWrapper ul li a p .bold{font-weight:bold;}
+body #container #wrapper #contentWrapper{width:100%;overflow-y:scoll;overflow-x:hidden;}body #container #wrapper #contentWrapper #waiting{margin:10px 10px 10px 10px;}
+body #container #wrapper #contentWrapper ul{width:100%;float:left;margin:0 0 0 0;list-style:none;}body #container #wrapper #contentWrapper ul li{border-top:2px solid #5f5f5f;width:100%;float:left;}body #container #wrapper #contentWrapper ul li a{color:inherit;text-decoration:inherit;}body #container #wrapper #contentWrapper ul li a p .bold{font-weight:bold;}
 body #container #wrapper #contentWrapper ul li a:hover{cursor:pointer;color:#1abc9c;}
 body #container #wrapper #userDisplay{height:80%;overflow-y:scroll;}
 body #container #wrapper #scrollWrapper{float:left;height:80%;overflow-y:scroll;}
