@@ -1,17 +1,34 @@
 /* CSS crunched with Crunch - http://crunchapp.net/ */
-@font-face{}body{font-family:'Helvetica Neue','Helvetica','Arial' !important;color:#372f2b;font-weight:bold;font-style:normal;width:100%;position:absolute;}body p{color:#5f5f5f;}
+@-webkit-keyframes spin{from{-webkit-transform:rotate(0deg);} to{-webkit-transform:rotate(360deg);}}@keyframes spin{from{transform:rotate(0deg);} to{transform:rotate(360deg);}}body{font-family:'Helvetica Neue','Helvetica','Arial' !important;color:#372f2b;font-weight:bold;font-style:normal;width:100%;position:absolute;}body h2{font-size:18px;color:#3b86c4;font-weight:normal;}
+body .bold{font-weight:bold;}
+body p{margin:0 0 0 0;color:#5f5f5f;line-height:20px;}
+body .topBump{margin-top:20px;}
+body .bottomBump{margin-bottom:20px;}
 body .hidden{display:none;}
-body .btn{border-radius:30px;background:#3272a6;filter:progid:dximagetransform.microsoft.gradient(startColorstr='#3b86c4', endColorstr='#165181');background:-webkit-gradient(linear, left top, left bottom, from(#3b86c4), to(#165181));background:-moz-linear-gradient(top, #3b86c4, #165181);}
-body .btn-large{text-shadow:1px 0px 2px #111144;padding:0 32px 0 32px;height:40px;font-size:18px;font-weight:bold;}
-body .btn-small{text-shadow:1px 0px 1px #111144;padding:0 18px 0 18px;height:30px;font-size:16px;font-weight:bold;}
+body .btn{border-radius:30px;float:left;background:#3b86c4;background:-webkit-gradient(linear, left top, left bottom, from(#3b86c4), to(#165181));background:-moz-linear-gradient(top, #3b86c4, #165181);}
+body .btn:hover{background:#165181;background:-webkit-gradient(linear, left top, left bottom, from(#165181), to(#3b86c4));background:-moz-linear-gradient(top, #165181, #3b86c4);}
+body .btn-large{padding-top:0px;text-shadow:1px 0px 2px #111144;padding:0px 32px 0px 32px !important;height:38px;font-size:16px;font-weight:bold;}
+body .btn-small{text-shadow:1px 0px 1px #111144;padding:0 18px 0 18px;height:26px;font-size:14px;font-weight:bold;}
 body #fadescreen{position:relative;top:0px;left:0px;}
-body #container{overflow:hidden;width:300px;height:500px;}body #container #pointSet{float:left;}
-body #container #time{float:right;}
-body #container #wrapper{float:left;width:100%;margin:10px 0 10px 0;}body #container #wrapper ul{width:100%;float:left;margin:0 0 0 0;list-style:none;}body #container #wrapper ul li{padding:5px 0 5px 0;width:100%;float:left;}body #container #wrapper ul li .gameModes .gameTitle h2{margin-top:0px;}
-body #container #wrapper ul li .gameModes .gameDescription{margin-bottom:10px;}
-body #container #wrapper #contentWrapper{overflow-y:scoll;}body #container #wrapper #contentWrapper ul{width:100%;float:left;margin:0 0 0 0;list-style:none;}body #container #wrapper #contentWrapper ul li{padding:5px 0 5px 0;width:100%;float:left;}body #container #wrapper #contentWrapper ul li a{color:inherit;text-decoration:inherit;}
+body #container{padding:10px 0 10px 0 !important;overflow:hidden;width:300px;height:600px;}body #container #forfeitRound{float:left;margin:0 0 0 5px;}
+body #container #pointSet{font-size:18px;font-weight:bold;float:left;width:30px;margin-left:5px;}
+body #container #SelectPlayerButton{float:left;margin-left:60px;}
+body #container #time{font-size:18px;font-weight:bold;float:right;margin-right:10px;}
+body #container #wrapper{float:left;width:100%;margin:10px 0 10px 0;}body #container #wrapper #menuItems li{padding:0px 10px 0px 10px;width:280px;}
+body #container #wrapper #waitingForInfo{float:left;margin-left:30px;}
+body #container #wrapper .loading{float:left;width:48px;height:48px;margin:30px 0 0 126px;}body #container #wrapper .loading .maskedCircle{width:40px;height:40px;border-radius:32px;border:3px solid #3b86c4;}
+body #container #wrapper .loading .mask{width:32px;height:32px;overflow:hidden;}
+body #container #wrapper .loading .spinner{width:46px;height:46px;-webkit-animation:spin 1s infinite linear;animation:spin 1s infinite linear;}
+body #container #wrapper ul{width:100%;float:left;margin:0 0 0 0;list-style:none;}body #container #wrapper ul li{padding:5px 0 5px 0;width:100%;float:left;}body #container #wrapper ul li .gameModes .gameTitle h2{margin-top:0px;}
+body #container #wrapper #contentWrapper{overflow-y:scoll;overflow-x:hidden;}body #container #wrapper #contentWrapper ul{width:100%;float:left;margin:0 0 0 0;list-style:none;}body #container #wrapper #contentWrapper ul li{border-top:2px solid #5f5f5f;width:100%;float:left;}body #container #wrapper #contentWrapper ul li a{color:inherit;text-decoration:inherit;}body #container #wrapper #contentWrapper ul li a p .bold{font-weight:bold;}
 body #container #wrapper #contentWrapper ul li a:hover{cursor:pointer;color:#1abc9c;}
-body #container #wrapper #userDisplay{height:100%;overflow-y:scroll;}
+body #container #wrapper #userDisplay{height:80%;overflow-y:scroll;}
 body #container #wrapper #scrollWrapper{float:left;height:80%;overflow-y:scroll;}
-body #container #wrapper #winners ul{width:100%;float:left;margin:0 0 20px 0;list-style:none;}body #container #wrapper #winners ul li{padding:5px 0 5px 0;width:100%;float:left;}body #container #wrapper #winners ul li .player{width:40%;float:left;}
-body #container #wrapper #winners ul li .points{text-align:right;width:40%;float:left;}
+body #container #wrapper #winWrapper{margin:0 10px 0 10px;}body #container #wrapper #winWrapper #winners ul{width:100%;float:left;margin:0 0 20px 0;list-style:none;}body #container #wrapper #winWrapper #winners ul li{padding:5px 0 5px 0;width:100%;float:left;}body #container #wrapper #winWrapper #winners ul li .player{width:230px;float:left;}
+body #container #wrapper #winWrapper #winners ul li .points{text-align:right;width:30px;float:left;}
+body #container #wrapper .darkened{background-color:rgba(50, 50, 50, 0.3);}
+body #container #wrapper .list:hover{background-color:rgba(50, 50, 50, 0.1);}body #container #wrapper .list:hover .nameInTitle p{text-decoration:underline !important;}
+body #container #wrapper .characters{padding:5px 5px 5px 5px;}body #container #wrapper .characters .nameInTitle p{width:273px;margin:16px 0 0 0;}
+body #container #wrapper .characters .image{margin:16px 0 16px 0;width:273px;}
+body #container #wrapper .characters .fullBio{margin-top:0px !important;}
+body #container #wrapper .characters .bio p{width:273px;margin:16px 0 16px 0;}

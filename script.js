@@ -30,6 +30,8 @@ var menuFirstIn;
 //this is set just after the app loads by pulling in information.
 var menuAfter;
 //things that get pulled in
+var waitingForInfo = "Waiting for server-side response :-)";
+//gets pulled in.
 var startScreen = "<div id='fadescreen'></div><div id='pointSet'></div><div id='wrapper'></div><input type='button' value='Oh! Me First!' onclick='contentSwap(selectCharacterScreen)'><input type='button' value='I\'ll guess...' onclick = 'contentSwap(guessActor)'><input type='button' value='lol' onclick='forfeit()'>";
 var guessActor = '<div id="pointSet"></div><div id="time">' + timeForRound + '</div><div id="wrapper"><div id="contentWrapper"><p> Waiting for the charade master to make his choice.</p></div></div>';
 var selectCharacterScreen = '<div id="fadescreen"></div><div id="pointSet"></div><div id="time">' + timeForRound + '</div><div id="wrapper"><div id="contentWrapper"></div></div>';
@@ -307,7 +309,7 @@ function contentSwap(selector) {
 		mode = 0;
 	}
 	if (selector == selectCharacterScreen) {
-		document.getElementById("wrapper").innerHTML = "We're waiting for information from the server :-)";
+		document.getElementById("wrapper").innerHTML = waitingForInfo;
 		retrieveActorsFromServer();
 		currentRound++;
 		setMode(1);
@@ -941,6 +943,7 @@ function init() {
 								"pointsArray" : JSON.stringify(localId)
 							});
 							menuAfter = "<div id='postMenu'>" + localText.InputText[0].menuAfterText + "</div>";
+							waitingForInfo = localText.InputText[0].waitingForInformation;
 							if(gapi.hangout.data.getState().GameMode != undefined && gapi.hangout.data.getState().actorsChosen != ""){
 								gameMode = gapi.hangout.data.getState().GameMode;
 								parseData(JSONarr.parse(gapi.hangout.data.getState().actorsChosen));

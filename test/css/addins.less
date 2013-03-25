@@ -1,7 +1,11 @@
-@font-face {
-   
-}
-
+ @-webkit-keyframes spin {
+                from { -webkit-transform: rotate(0deg); }
+                to { -webkit-transform: rotate(360deg); }
+        }
+ @keyframes spin {
+                from {transform: rotate(0deg); }
+                to {transform: rotate(360deg); }
+        }
 body{
   font-family: 'Helvetica Neue','Helvetica','Arial' !important;
   color:rgba(55,47,43,1);
@@ -9,32 +13,57 @@ font-weight: bold;
 font-style: normal;
     width:100%;
 position:absolute;
-p{
-    color : rgba(95,95,95,1);
+h2{
+    font-size:18px;
+    color:rgba(59,134,196,1);
+    font-weight:normal;
     }
+
+.bold{
+        font-weight:bold;
+        }
+
+p{
+    margin:0 0 0 0;
+    color : rgba(95,95,95,1);
+    line-height:20px;
+    }
+    .topBump{
+        margin-top:20px;
+        }
+    .bottomBump{
+        margin-bottom:20px;
+        }
 .hidden{
 display:none;    
 }
 .btn{
 border-radius:30px;    
-background: #3272a6; /* for non-css3 browsers */
-
-filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#3b86c4', endColorstr='#165181'); /* for IE */
+float:left;
+background: #3b86c4; /* for non-css3 browsers */
 background: -webkit-gradient(linear, left top, left bottom, from(#3b86c4), to(#165181)); /* for webkit browsers */
 background: -moz-linear-gradient(top,  #3b86c4,  #165181); /* for firefox 3.6+ */
 }
+.btn:hover{
+    //color:none;
+background: #165181; /* for non-css3 browsers */
+background: -webkit-gradient(linear, left top, left bottom, from(#165181), to(#3b86c4)); /* for webkit browsers */
+background: -moz-linear-gradient(top,  #165181,  #3b86c4); /* for firefox 3.6+ */
+    
+    }
 .btn-large{
+    padding-top:0px;
      text-shadow: 1px 0px 2px #111144;
-    padding: 0 32px 0 32px;
-    height:40px;
-    font-size:18px;
+    padding: 0px 32px 0px 32px !important;
+    height:38px;
+    font-size:16px;
     font-weight:bold;
     }
 .btn-small{
      text-shadow: 1px 0px 1px #111144;
     padding: 0 18px 0 18px;
-    height:30px;
-    font-size:16px;
+    height:26px;
+    font-size:14px;
     font-weight:bold;
     }
 #fadescreen{
@@ -46,16 +75,71 @@ background: -moz-linear-gradient(top,  #3b86c4,  #165181); /* for firefox 3.6+ *
     
     }
 #container{
+    padding:10px 0 10px 0 !important;
       overflow:hidden;
         width:300px;
-        height:500px;
-    #pointSet{
+        height:600px;
+    #forfeitRound{
         float:left;
+        margin: 0 0 0 5px;
+        }
+    #pointSet{
+        font-size:18px;
+        font-weight:bold;
+        float:left;
+        width:30px;
+        margin-left:5px;
     }
+    #SelectPlayerButton{
+        float:left;
+        margin-left:60px;
+        }
     #time{
+        font-size:18px;
+        font-weight:bold;
         float:right;
+        margin-right:10px;
     }
-    #wrapper{
+    #wrapper{ 
+            /* Loading animation container */
+            #menuItems{
+                li{
+                    padding: 0px 10px 0px 10px;
+                    width:280px;
+                }
+                }
+            #waitingForInfo{
+                float:left;
+                margin-left:30px;
+                }
+            .loading {
+                float: left;
+                width: 48px;
+                height: 48px;
+//                margin-left:136px;
+                margin : 30px 0 0 126px;
+                .maskedCircle {
+                    width: 40px;
+                    height: 40px;
+                    border-radius: 32px;
+                    border: 3px solid rgba(59,134,196,1);
+                }
+                .mask {
+                    width: 32px;
+                    height: 32px;
+                    overflow: hidden;
+                }
+                 .spinner {
+                  //  position: absolute;
+                    //left: 1px;
+                    //top: 1px;
+                    width: 46px;
+                    height:46px;
+                    -webkit-animation: spin 1s infinite linear;
+                    animation: spin 1s infinite linear;
+                }
+            }     
+        
         ul{
                  width:100%;
                 float:left;
@@ -72,7 +156,6 @@ background: -moz-linear-gradient(top,  #3b86c4,  #165181); /* for firefox 3.6+ *
                                     }
                                 }
                             .gameDescription{
-                                    margin-bottom:10px;
                                 }
                             }
                      }
@@ -84,6 +167,8 @@ background: -moz-linear-gradient(top,  #3b86c4,  #165181); /* for firefox 3.6+ *
        //PASTE BACK HERE
         #contentWrapper{
             overflow-y:scoll;
+            overflow-x:hidden;
+            
             ul{
             
                 width:100%;
@@ -91,12 +176,17 @@ background: -moz-linear-gradient(top,  #3b86c4,  #165181); /* for firefox 3.6+ *
                 margin : 0 0 0 0;
                 list-style:none;
                     li{
-                        padding :5px 0 5px 0;
+                        border-top:2px solid #5f5f5f;
                         width:100%;
                         float:left;
                             a{
                                 color:inherit;
                                 text-decoration:inherit; 
+                                    p{
+                                        .bold{
+                                            font-weight:bold;
+                                            }
+                                        }
                                 }
                             a:hover{
                                 cursor : pointer;
@@ -106,7 +196,7 @@ background: -moz-linear-gradient(top,  #3b86c4,  #165181); /* for firefox 3.6+ *
                 }
             }
             #userDisplay{
-                height:100%;
+                height:80%;
                 overflow-y:scroll;
                 }
              #scrollWrapper{
@@ -117,6 +207,8 @@ background: -moz-linear-gradient(top,  #3b86c4,  #165181); /* for firefox 3.6+ *
             
             }
         }
+     #winWrapper{
+         margin: 0 10px 0 10px;
         #winners{
             ul{
                 width:100%;
@@ -128,24 +220,51 @@ background: -moz-linear-gradient(top,  #3b86c4,  #165181); /* for firefox 3.6+ *
                         width:100%;
                       float:left;
                         .player{
-                        width:40%;
+                        width:230px;
                               float:left;
                             }
                         .points{
                             text-align:right;
-                            width:40%;
+                            width:30px;
                               float:left;
                             }    
                         }
                 }
             
         }
-      
+    }
+        .darkened{
+            background-color:rgba(50,50,50,0.3);
+            }
+        .list:hover{
+                background-color:rgba(50,50,50,0.1);
+                .nameInTitle{
+       
+                    p{
+                                   text-decoration:underline !important;
+                    }
+                }
+            }
         .characters{
+            padding:5px 5px 5px 5px;
             .nameInTitle{
+                p{
+                        width:273px;
+                        margin:16px 0 0 0;
+                    }
+                }
+            
+            .image{
+                margin: 16px 0 16px 0;
+                width:273px;
+               }
+            .fullBio{
+                margin-top:0px !important;
                 }
                 .bio{
                         p{
+                            width:273px;
+                              margin:16px 0 16px 0;
                         }
                     img{
                         }
