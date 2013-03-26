@@ -37,13 +37,22 @@ $.ajax({
 
 //document.getElementById("container").innerHTML = mainMenu();
 //document.getElementById("wrapper").innerHTML = waiting();
+document.getElementById("wrapper").innerHTML = genericDiv();
 //actorSelect(10); //num is indicative of how many actors to pull through
 //parseData(10); //brings up what other players see.
 //winner(JSONarr);
 
-parseData(testData);
+////parseData(testData);
+var thing = "00:30";
 
+//console.log("10".charAt(1));
+splitTest(thing);
 
+function splitTest( tester ){
+	var min = tester.split(":")[0];
+	var sec = tester.split(":")[1];
+	console.log(min.length);
+}
 function winner(JSONinfo) {
 	console.log(textTemplating["InputText"][0]["endScreenText"]);
 	document.getElementById("container").innerHTML = textTemplating["InputText"][0]["endScreenText"];
@@ -101,9 +110,10 @@ function guessSelected(num){
 	console.log("were you playing, you'd've selected "+num);
 }
 
-function parseData(information) {
-//	dataPopulate(num)
-	var response = information;
+function parseData(num) {
+	dataPopulate(num);
+	response = data;
+	//var response = information;
 	var insertThing = "<div id='userDisplay'><ul>";
 	for (var i = 0; i < response.Title.length; i++) {
 		insertThing += "<li class='list characters' id = 'char" + i + "' onclick=selectButton('guessSelected'," + i + ")><div class='nameInTitle' id='nameInTitle" + i + "'>";
@@ -225,9 +235,11 @@ function dataPopulate(people){
 }
 function waiting(){
 	var insertString = '<div id="waitingForInfo"><h2>We\'re waiting for information. </h2></div><div class="loading"><div class="spinner"><div class="mask"><div class="maskedCircle"></div></div></div></div>';
-return insertString;	
-	
-	
+return insertString;		
+}
+function genericDiv(){
+	var insertString = '<div id="waitingForInfo">Mikolaj Banasik forfeited the round! Ridicule him.</div>';
+return insertString;
 }
 function mainMenu(){
 	var menuText = "";

@@ -21,7 +21,7 @@ body #container #wrapper .loading .mask{width:32px;height:32px;overflow:hidden;}
 body #container #wrapper .loading .spinner{width:46px;height:46px;-webkit-animation:spin 1s infinite linear;animation:spin 1s infinite linear;}
 body #container #wrapper ul{width:100%;float:left;margin:0 0 0 0;list-style:none;}body #container #wrapper ul li{padding:5px 0 5px 0;width:100%;float:left;}body #container #wrapper ul li .gameModes .gameTitle h2{margin-top:0px;}
 body #container #wrapper #contentWrapper{width:100%;overflow-y:scoll;overflow-x:hidden;}body #container #wrapper #contentWrapper #waiting{margin:10px 10px 10px 10px;}
-body #container #wrapper #contentWrapper ul{width:100%;float:left;margin:0 0 0 0;list-style:none;}body #container #wrapper #contentWrapper ul li{border-top:2px solid #5f5f5f;width:100%;float:left;}body #container #wrapper #contentWrapper ul li a{color:inherit;text-decoration:inherit;}body #container #wrapper #contentWrapper ul li a p .bold{font-weight:bold;}
+body #container #wrapper #contentWrapper ul{width:96%;float:left;margin:0 0 0 0;list-style:none;}body #container #wrapper #contentWrapper ul li{border-top:2px solid #5f5f5f;float:left;}body #container #wrapper #contentWrapper ul li a{color:inherit;text-decoration:inherit;}body #container #wrapper #contentWrapper ul li a p .bold{font-weight:bold;}
 body #container #wrapper #contentWrapper ul li a:hover{cursor:pointer;color:#1abc9c;}
 body #container #wrapper #userDisplay{height:80%;overflow-y:scroll;}
 body #container #wrapper #scrollWrapper{float:left;height:80%;overflow-y:scroll;}

@@ -33,9 +33,9 @@ var menuAfter;
 var waitingForInfo = "Waiting for server-side response :-)";
 //gets pulled in.
 var contentWhileWait = " Waiting for the charade master to make his choice.";
-var startScreen = "<div id='fadescreen'></div><div id='pointSet'></div><div id='wrapper' class=' '></div><input type='button' value='Oh! Me First!' onclick='contentSwap(selectCharacterScreen)'><input type='button' value='I\'ll guess...' onclick = 'contentSwap(guessActor)'><input type='button' value='lol' onclick='forfeit()'>";
-var guessActor = '<div id="pointSet"></div><div id="time">' + timeForRound + '</div><div id="wrapper"class=" "><div id="contentWrapper"><p id="waiting">'+contentWhileWait+'</p></div></div>';
-var selectCharacterScreen = '<div id="fadescreen"></div><div id="pointSet"></div><div id="time">' + timeForRound + '</div><div id="wrapper"class=" "><div id="contentWrapper"></div></div>';
+var startScreen = "<div id='fadescreen'></div><div id='pointSet'></div><div id='wrapper' class=' '></div><input type='button' value='Oh! Me First!' onclick='contentSwap(selectCharacterScreen)'><input type='button' value='I\'ll guess...' onclick = 'contentSwap(guessActor)'><input type='button' value='Forfeit Round!' id='forfeitButton'onclick='forfeit()'>";
+var guessActor = '<div id="pointSet">'+points+'</div><div id="time">' + timeForRound + '</div><div id="wrapper"class=" "><div id="contentWrapper"><p id="waiting">' + contentWhileWait + '</p></div></div>';
+var selectCharacterScreen = '<div id="fadescreen"></div><div id="pointSet">'+points+'</div><div id="time">' + timeForRound + '</div><div id="wrapper"class=" "><div id="contentWrapper"></div></div>';
 var endScreen;
 var outOfTime;
 var currentRound = 0;
@@ -99,7 +99,7 @@ function pointsSorter(JSONinfo) {
 }
 
 function bubble_srt(a, b) {
-		//basic bubble sort sorting the 'a' array and shuffling around
+	//basic bubble sort sorting the 'a' array and shuffling around
 	//the b array to match the a array.
 	var n = a.length;
 	var i;
@@ -161,7 +161,6 @@ function setGameMode(modeToSet) {
 
 function reset(user) {
 	console.log(user);
-
 	console.log(gapi.hangout.data.getState());
 	var points = {};
 	var usefulBit = JSON.parse(gapi.hangout.data.getState().pointsArray);
@@ -204,7 +203,6 @@ function nextPlayer() {
 	console.log(JSON.parse(gapi.hangout.data.getState().pointsArray));
 	console.log("NextPlayer method");
 	console.log(currentRound + " of " + maxRounds);
-
 	if (gameMode == "3ShotsEach" && currentRound >= maxRounds * ((gapi.hangout.getEnabledParticipants().length) - 1)) {
 		console.log("3 shots each");
 		endCheck = 0;
@@ -258,6 +256,7 @@ function nextPlayer() {
 					if (gameMode == "3ShotsEach" && currentRound >= maxRounds) {
 						sendCommand("nextPlayer");
 					} else {
+						console.log("selectCharacterScreen being passed");
 						contentSwap(selectCharacterScreen);
 					}
 				}
@@ -268,6 +267,7 @@ function nextPlayer() {
 					if (gameMode == "3ShotsEach" && currentRound >= maxRounds) {
 						sendCommand("nextPlayer");
 					} else {
+						console.log("selectCharacterScreen being passed");
 						contentSwap(selectCharacterScreen);
 					}
 				}
@@ -281,31 +281,47 @@ function contentSwap(selector) {
 	//sets mode to 0 if selector
 	document.getElementById("container").innerHTML = selector;
 	if (selector == outOfTime) {
+		try {
+						gapi.hangout.data.submitDelta({
+							actorsChosen : ""
+						});
+					} catch(e) {
+						console.log(e);
+					}
 		if (mode == 1) {
 			setTimeout(function() {
 				sendCommand("nextPlayer");
 			}, 1000);
 		}
 	}
+	
+	if (contentSwap == selectCharacterScreen || contentSwap == guessActor) {
+		if(gameMode == "QuickFire"){
+			document.getElementById("time").innerHTML = timeForRound;
+			document.getElementById("pointSet").innerHTML = points;
+				gapi.hangout.data.submitDelta({
+				actorsChosen : ""
+			});	
+		}
+		document.getElementById("pointSet").innerHTML = points;
+	}
 	if (selector == endScreen) {
 		pointsSorter(JSON.parse(gapi.hangout.data.getState().pointsArray));
 	}
-	if (contentSwap == selectCharacterScreen || contentSwap == guessActor) {
-		document.getElementById("pointSet").innerHTML = points;
-	}
-	if (selector == menuFirstIn) {
+	else if (selector == menuFirstIn) {
 		mode = 1;
 		console.log("Selected menu screen.");
 	}
-	if (selector == menuAfter) {
+	else if (selector == menuAfter) {
 		mode = 0;
 	}
-	if (selector == selectCharacterScreen) {
+	else if (selector == selectCharacterScreen) {
 		document.getElementById("wrapper").innerHTML = waitingForInfo;
-		retrieveActorsFromServer();
-		currentRound++;
 		setMode(1);
 		mode = 1;
+		retrieveActorsFromServer();
+		currentRound++;
+		
 		gapi.hangout.data.submitDelta({
 			command : "forceChange",
 			myId : gapi.hangout.getLocalParticipantId()
@@ -319,7 +335,7 @@ function contentSwap(selector) {
 			pauseCountdown();
 			document.getElementById("time").innerHTML = timeForRound;
 		}
-		if (gameMode == "10RoundShootOut") {
+		else if (gameMode == "10RoundShootOut") {
 			document.getElementById("time").innerHTML = "";
 			document.getElementById("pointSet").innerHTML = points;
 		}
@@ -345,8 +361,28 @@ function startCountdown() {
 
 function count() {
 	var minSec = document.getElementById("time").innerHTML.split(":");
-	minutes = parseInt(minSec[0]);
-	seconds = parseInt(minSec[1]);
+	minutes = parseInt(minSec[0],10);
+	seconds = parseInt(minSec[1],10);
+	
+	if (seconds.toString().charAt(1) == "0" &&seconds.toString().charAt(0) != "0") {
+		if (mode == 1) {
+			console.log("being sent");
+			try {
+				if(minutes < 10 && minutes.length != 2){
+					minutesEdited = "0"+minutes.toString();
+				}
+				else{
+					minutesEdited = minutes.toString();
+				}
+				gapi.hangout.data.submitDelta({
+					command : "setTime",
+					timeToSet : minutesEdited + ":" + seconds
+				});
+			} catch (e) {
+				console.error(e.stack);
+			}
+		}
+	}
 	if (minutes == "00" && seconds == "00") {
 		clearInterval(interval);
 		interval = null;
@@ -361,13 +397,14 @@ function count() {
 			contentSwap(outOfTime);
 		}
 	}
-	if (document.getElementById('time')) {
-		if (document.getElementById('time').innerHTML != "00:00" && interval != null) {
+	if (document.getElementById("time")) {
+		if (document.getElementById("time").innerHTML != "00:00" && interval != null) {
 
 			if (seconds == 0) {
 				minutes -= 1;
 				seconds += 60;
 			}
+			
 			if (minutes == 0 && seconds == 0) {
 				minutes == 0;
 				seconds == 1;
@@ -378,17 +415,24 @@ function count() {
 			if (minutes >= 0 && seconds >= 0) {
 				seconds = seconds - 1;
 			}
+			
 			if (minutes < 10 && minutes.length != 2) {
 				minutes = "0" + minutes;
 			}
+			
 			if (seconds < 10 && seconds.length != 2) {
+				console.log(seconds);
 				seconds = "0" + seconds;
 			}
 
 			if (minutes == 0) {
 				minutes = "00";
 			}
+			
 			if (interval != null) {
+				if(seconds == "09"){
+					console.log("DEATH");
+				}
 				document.getElementById("time").innerHTML = minutes + ":" + seconds;
 			}
 		}
@@ -398,6 +442,7 @@ function count() {
 function forfeit() {
 	//	contentSwap(guessActor);
 	//changePoints(1);
+	document.getElementById("forfeitButton").style.display = "none";
 	try {
 		gapi.hangout.data.submitDelta({
 			command : "forfeit",
@@ -438,10 +483,13 @@ function GameSetup(modeToSetup) {
 //processes the JSON information once it has been received by the client.
 function parseData(response) {
 	console.log(response);
+	if(gameMode == "QuickFire"){
+		startCountdown();
+	}
 	var insertThing = "<div id='userDisplay'><ul>";
 	for (var i = 0; i < response.Title.length; i++) {
 		insertThing += "<li class='list characters' id = 'char" + i + "' onclick=selectButton('guessSelected'," + i + ")><div class='nameInTitle' id='nameInTitle" + i + "'>";
-		insertThing += "<p>"+ response.Name[i] +" played by " + response.Actor[i] + " in " + response.Title[i] + ".</p></div>";
+		insertThing += "<p>" + response.Name[i] + " played by " + response.Actor[i] + " in " + response.Title[i] + ".</p></div>";
 		insertThing += "<div class= 'bio' id='bio" + i + "''>";
 		if (response.Image[i] != 'null' && response.Image[i] != undefined) {
 			//	insertThing += "<img class='image' align='left' id= 'img" + i + "' src='" + response.Image[i] + "'>";
@@ -451,21 +499,25 @@ function parseData(response) {
 
 	}
 	insertThing += "</ul></div>";
-	document.getElementById("container").innerHTML = '<div id="pointSet">' + points + '</div>' + '<div id="SelectPlayerButton" ></div>'+'<div id="time">' + timeForRound + '</div>' +"<div id='wrapper'class=' '><div id='contentWrapper'></div></div>";
+	document.getElementById("container").innerHTML = '<div id="pointSet">' + points + '</div>' + '<div id="SelectPlayerButton" ></div>' + '<div id="time">' + timeForRound + '</div>' + "<div id='wrapper'class=' '><div id='contentWrapper'></div></div>";
 	document.getElementById("contentWrapper").innerHTML = insertThing;
 }
 
 //function carried out upon a guess being chosen by the user
 function guessSelected(idOfGuess) {
+	console.log(idOfGuess);
 	////console.log("THING1:"+idOfGuess);
 	////console.log("THING2:"+passedId);
-	var element = document.getElementById("ButtonSelect"); element.parentNode.removeChild(element);
+	var element = document.getElementById("ButtonSelect");
+	element.parentNode.removeChild(element);
 	if (idOfGuess == parseInt(passedId)) {
 		document.getElementById("contentWrapper").innerHTML = "You're an awesome person for being right, go you!";
 		changePoints(1);
+		
 		gapi.hangout.data.submitDelta({
 			command : "itGotGuessed",
-			guessedBy : gapi.hangout.getLocalParticipant().person.displayName
+			guessedBy : gapi.hangout.getLocalParticipant().person.displayName,
+			actorsChosen : ""
 		});
 	}
 	if (idOfGuess != passedId) {
@@ -509,7 +561,8 @@ function charSelected(charNum) {
 	//push to other clients of thingy at this point with all possible choices.
 	//push with data ID, transmission as data, and charSelected.
 
-var element = document.getElementById("ButtonSelect"); element.parentNode.removeChild(element);
+	var element = document.getElementById("ButtonSelect");
+	element.parentNode.removeChild(element);
 	//push to other clients of thingy at this point with all possible choices.
 	//push with data ID, transmission as data, and charSelected.
 	var responseString = "";
@@ -533,30 +586,27 @@ var element = document.getElementById("ButtonSelect"); element.parentNode.remove
 	responseString += "</div>";
 	//responseString += '<input type="button" value="Start Timer!" id="startTimer" onclick="sendCommand(\'startCountdown\')">';
 	//responseString += '<input type="button" value="pause" onclick="sendCommand(\'pauseCountdown\')">';
-	document.getElementById('wrapper').innerHTML = "<div id='scrollWrapper'>"+responseString+"</div>"
-
-
+	document.getElementById('wrapper').innerHTML = "<div id='scrollWrapper'>" + responseString + "</div>"
 
 	if (timeForRound != "") {
 		console.log("thisThing");
 		sendCommand("startCountdown");
 	}
 }
-function selectButton(method, index){
+
+function selectButton(method, index) {
 	var charNames = document.getElementsByClassName("characters darkened");
-		console.log(charNames);
-		for(var i = 0; i < charNames.length; i++){
-			console.log(i);
-			charNames[i].className="list characters";
-		}
-		document.getElementById("char"+index).className="characters darkened";
-	if(method=="charSelected"){//
-		document.getElementById("SelectPlayerButton").innerHTML = '<button id="ButtonSelect" class="btn btn-small" onclick="'
-			+'charSelected('+index+')">Select Me</button>';
+	console.log(charNames);
+	for (var i = 0; i < charNames.length; i++) {
+		console.log(i);
+		charNames[i].className = "list characters";
 	}
-	if(method=="guessSelected"){//
-		document.getElementById("SelectPlayerButton").innerHTML = '<button id="ButtonSelect" class="btn btn-small" onclick="'
-			+'guessSelected('+index+')">Select Me</button>';
+	document.getElementById("char" + index).className = "characters darkened";
+	if (method == "charSelected") {//
+		document.getElementById("SelectPlayerButton").innerHTML = '<button id="ButtonSelect" class="btn btn-small" onclick="' + 'charSelected(' + index + ')">Select Me</button>';
+	}
+	if (method == "guessSelected") {//
+		document.getElementById("SelectPlayerButton").innerHTML = '<button id="ButtonSelect" class="btn btn-small" onclick="' + 'guessSelected(' + index + ')">Select Me</button>';
 	}
 }
 
@@ -587,12 +637,12 @@ function retrieveActorsFromServer() {
 			data = response;
 			//Actor, Name, Title, Image, Bio
 			document.getElementById("wrapper").innerHTML = "";
-			document.getElementById("container").innerHTML = '<div id="pointSet">' + points + '</div>' + '<div id="time">' + timeForRound + '</div>' + '<div id="wrapper"class=" "></div>' + '<input type="button" value="Forfeit Round!" id="forfeitRound" onclick="forfeit()">';
+			document.getElementById("container").innerHTML = '<div id="pointSet">' + points + '</div>' + '<div id="time">' + timeForRound + '</div>' + '<div id="wrapper"class=" "></div>' + '<input type="button" value="Forfeit Round!" id="forfeitButton" onclick="forfeit()">';
 			var insertString;
-	var response = data;
+			var response = data;
 			//Actor, Name, Title, Image, Bio
 			document.getElementById("wrapper").innerHTML = "";
-			document.getElementById("container").innerHTML = '<div id="pointSet">' + points + '</div>' + '<div id="SelectPlayerButton" ></div>'+'<div id="time">' + timeForRound + '</div>' + '<div id="wrapper"class=" "></div>' + '<input type="button" class="btn btn-large" value="Forfeit Round!" id="forfeitRound" onclick="forfeit()">';
+			document.getElementById("container").innerHTML = '<div id="pointSet">' + points + '</div>' + '<div id="SelectPlayerButton" ></div>' + '<div id="time">' + timeForRound + '</div>' + '<div id="wrapper"class=" "></div>' + '<input type="button" class="btn btn-large" id="forfeitButton" value="Forfeit Round!" onclick="forfeit()">';
 			insertString = "<div id='contentWrapper' ><ul>";
 			console.log("receiving information");
 			for (var i = 0; i < response.Title.length; i++) {
@@ -610,19 +660,19 @@ function retrieveActorsFromServer() {
 				}
 			}
 			insertString += '</ul></div>';
-			document.getElementById("wrapper").innerHTML =  "<div id='scrollWrapper'class='bottomBump'>"+insertString+"</div>";
+			document.getElementById("wrapper").innerHTML = "<div id='scrollWrapper'class='bottomBump'>" + insertString + "</div>";
 			var increment = people;
 			//incrementing through array of classnames loaded
 			try {
 				$('.image').load(function() {
 					/*increment--;
-					var w = $(this).width();
-					var h = $(this).height();
-					if (w >= h) {*/
-						document.getElementsByClassName("image")[increment].style.width = "273px";
-//					} else if (w <= h) {
-		//				document.getElementsByClassName("image")[increment].style.height = "200px";
-	//				}
+					 var w = $(this).width();
+					 var h = $(this).height();
+					 if (w >= h) {*/
+					document.getElementsByClassName("image")[increment].style.width = "273px";
+					//					} else if (w <= h) {
+					//				document.getElementsByClassName("image")[increment].style.height = "200px";
+					//				}
 				});
 			} catch(e) {
 				console.log(e);
@@ -637,7 +687,8 @@ function wrongGuess() {
 	if (guessesMade == gapi.hangout.getEnabledParticipants().length) {
 		gapi.hangout.data.submitDelta({
 			command : "allBadGuess",
-			actor : gapi.hangout.getLocalParticipant().person.displayName
+			actor : gapi.hangout.getLocalParticipant().person.displayName,
+			actorsChosen : ""
 		});
 		guessesMade = 1;
 	}
@@ -648,8 +699,8 @@ function wrongGuess() {
 function onStateChanged(event) {
 	//console.log("POINTS!!! "+points);
 	console.log(event);
-	console.log(gapi.hangout.data.getState().command);
-	console.log(gapi.hangout.data.getState().pointsArray);
+	//console.log(gapi.hangout.data.getState().command);
+	//console.log(gapi.hangout.data.getState().pointsArray);
 	if (gapi.hangout.data.getState().command == "restartSelected") {
 		currentRound = 0;
 		points = 0;
@@ -664,11 +715,19 @@ function onStateChanged(event) {
 			//console.log(JSON.parse(gapi.hangout.data.getState().pointsArray));
 
 			//console.log(gapi.hangout.data.getState());
-
-			if (gapi.hangout.data.getState().command == "startCountdown") {
+			if (gapi.hangout.data.getState().command == "setTime") {
+				//if (mode == 0 && gameMode == "QuickFire") {
+				//	if(gapi.hangout.data.getState().timeToSet == "00:00"){
+				//		pauseCountdown();
+				//	}
+				//	document.getElementById("time").innerHTML = gapi.hangout.data.getState().timeToSet;
+				//}
+			} else if (gapi.hangout.data.getState().command == "startCountdown") {
 				startCountdown();
-			}
-			if (gapi.hangout.data.getState().command == "setGameMode") {
+				if(mode==0){
+					parseData(JSON.parse(gapi.hangout.data.getState().actorsChosen));
+				}
+			} else if (gapi.hangout.data.getState().command == "setGameMode") {
 				console.log(gapi.hangout.data.getState().GameMode);
 				gameMode = gapi.hangout.data.getState().GameMode;
 				console.log(maxRounds + "," + currentRound);
@@ -705,7 +764,7 @@ function onStateChanged(event) {
 					pauseCountdown();
 					document.getElementById("contentWrapper").innerHTML = "Nobody guessed your character. Don't worry though, I still like you!";
 					setTimeout(function() {
-						if (gameMode == "quickFire" && mode == 1) {
+						if (gameMode == " QuickFire" && mode == 1) {
 							pause = true;
 						}
 						sendCommand("nextPlayer");
@@ -722,19 +781,19 @@ function onStateChanged(event) {
 			if (gapi.hangout.data.getState().command == "nextPlayer") {
 				//console.log("SHIT IS GETTING DONE"+points);
 				if (mode == 1) {
-					try {
-						gapi.hangout.data.submitDelta({
-							actorsChosen : ""
-						});
-					} catch(e) {
-						console.log(e);
-					}
+					mode = 0;
+					
+				
 				}
-				if (gameMode == "quickFire") {
+			 if (gameMode == "QuickFire") {
 					pause = true;
+					document.getElementById("time").innerHTML = timeForRound;
+					
+						nextPlayer();
 				}
-				if (gameMode == "3ShotsEach") {
-					try {
+				
+		 if (gameMode == "3ShotsEach") {
+				try {
 						gapi.hangout.data.submitDelta({
 							actorsChosen : ""
 						});
@@ -742,9 +801,11 @@ function onStateChanged(event) {
 						console.log(e);
 					}
 					nextPlayer();
-				} else if (maxRounds > currentRound) {
+				} 
+			 if (maxRounds > currentRound) {
 					nextPlayer();
-				} else {
+				} 
+				else {
 					console.log(maxRounds + "," + currentRound);
 					setGameMode("finish");
 				}
@@ -756,7 +817,12 @@ function onStateChanged(event) {
 				} else {
 					document.getElementById("wrapper").innerHTML = "Why would you do such a thing?";
 				}
-				nextPlayer();
+				setTimeout(function() {
+						if (gameMode == " QuickFire" && mode == 1) {
+							pause = true;
+						}
+						sendCommand("nextPlayer");
+					}, 1000);
 			}
 			if (gapi.hangout.data.getState().command == "itGotGuessed") {
 				try {
@@ -768,9 +834,10 @@ function onStateChanged(event) {
 						//console.log("actor");
 						document.getElementById("contentWrapper").innerHTML = "You got guessed by " + gapi.hangout.data.getState().guessedBy + ".";
 						changePoints(1);
+						mode = 0;
 						setTimeout(function() {
 							try {
-								if (gameMode == "quickFire" && mode == 1) {
+								if (gameMode == " QuickFire" && mode == 1) {
 									pause = true;
 								}
 								//console.log("COMMAND SENDING"+points);
@@ -800,8 +867,9 @@ function onStateChanged(event) {
 			//console.log(gapi.hangout.data.getState().command + ":" + "command Issued");
 			if (gapi.hangout.data.getState().command == "forceChange") {
 
-				if (gapi.hangout.getLocalParticipantId() != gapi.hangout.data.getState().myId) {
+				if (mode==0) {
 					if (gameMode == "QuickFire") {
+						console.log("starting countdown");
 						startCountdown();
 					}
 					contentSwap(guessActor);
@@ -810,15 +878,11 @@ function onStateChanged(event) {
 						try {
 							console.log("655");
 							console.log(gapi.hangout.data.getState().actorsChosen);
-							parseData(JSON.parse(gapi.hangout.data.getState().actorsChosen));
-						} catch(e) {
-							console.log(e.stack);
-							try {
+							if(gapi.hangout.data.getState().actorsChosen != ""){
 								parseData(JSON.parse(gapi.hangout.data.getState().actorsChosen));
-							} catch(e) {
-								console.log(e.stack);
-								contentSwap(guessActor);
 							}
+						} catch(e) {
+							console.log(e.stackTrace);
 						}
 					}
 				}
@@ -853,6 +917,18 @@ function onMessageReceived(event) {
 
 function left(event) {
 	//bit that works goes here.
+	if(gapi.hangout.data.getEnabledParticipants().length == 0){
+		try {
+		/*var updates = {
+			
+		};
+		var removes = ["command", "pointsArray", "roundCurrentCount","guessedBy", "myId", "GameMode", "charID", "actorsChosen", "actor", "forfeitBy"];
+
+		gapi.hangout.data.submitDelta(updates, removes);*/
+	} catch(e) {
+		console.log(e);
+	}
+	}
 	console.log(event);
 	var exiter = null;
 	for (var i = 0; i < event.disabledParticipants.length; i++) {
@@ -904,22 +980,22 @@ function init() {
 				gapi.hangout.data.onMessageReceived.add(onMessageReceived);
 				gapi.hangout.onParticipantsDisabled.add(left);
 
-			var menuText = "";
-					$.ajax({
+				var menuText = "";
+				$.ajax({
 					url : "https://dev.welikepie.com:444/movieSiteInfo/getJSON.php?json=textJSON.txt&jsoncallback=?",
 					dataType : 'jsonp',
 					async : false,
 					success : function(response) {
 						localText = response;
 						menuText += "<div id='wrapper'class=' '><ul id='menuItems'>";
-						
+
 						for (var i = 0; i < localText.GameModes.length; i++) {
 							menuText += "<li class='bottomBump'><div class = 'gameModes' id='" + localText.GameModes[i].id + "'>";
 							menuText += "<div class = 'gameTitle'><h2>" + localText.GameModes[i].Title + "</h2></div>"
 							menuText += "<div class = 'gameDescription'><p>" + localText.GameModes[i].Description + "</p></div>";
-			//				menuText += "<input type='button' class = 'btn btn-mini gameButtons' id='" + localText.GameModes[i].id + "button'onclick='setGameMode(\"" + localText.GameModes[i].id + "\")' value='"+localText.GameModes[i].ButtonText+"'>";
+							//				menuText += "<input type='button' class = 'btn btn-mini gameButtons' id='" + localText.GameModes[i].id + "button'onclick='setGameMode(\"" + localText.GameModes[i].id + "\")' value='"+localText.GameModes[i].ButtonText+"'>";
 							menuText += "<input type='button' class = 'btn btn-small gameButtons topBump' id='" + localText.GameModes[i].id + "button'onclick='setGameMode(\"" + localText.GameModes[i].id + "\")' value='Start Game'>";
-			
+
 							menuText += "</div>"
 						}
 						menuText += "</ul></div>";
@@ -929,23 +1005,37 @@ function init() {
 						waitingForInfo = localText.InputText[0].waitingForInformation;
 						contentWhileWait = localText.InputText[0].waitMessage;
 						//}
-						
-						
+//						currentRound = 0;
 						//});
-						try {
-							currentRound = 0;
-							var localId = {};
-							localId[gapi.hangout.getLocalParticipantId()] = [points, 0];
-							gapi.hangout.data.submitDelta({
-								"pointsArray" : JSON.stringify(localId),
-								
-								"command" : ""
-							});
-							console.log("pointsArray sent!");
-							console.log(gapi,hangout.getState());
-						} catch(e) {
-							console.log("We failed on start." + e);
+						console.log("GETTING POITNS BITCHES");
+						console.log(gapi.hangout.data.getState().pointsArray);
+						if(gapi.hangout.data.getState().pointsArray == undefined){
+							try {
+								var localId = {};
+								localId[gapi.hangout.data.getLocalParticipantId()] = [points, 0];
+								gapi.hangout.data.submitDelta({
+									"pointsArray" : JSON.stringify(localId),
+	
+									"command" : ""
+								});
+								console.log("pointsArray sent!");
+								console.log(gapi.hangout.data.getState().pointsArray);
+							} catch(e) {
+								console.log("We failed on start." + e);
+							}
 						}
+						else if(gapi.hangout.data.getState().pointsArray != undefined){
+							var localId = JSON.parse(gapi.hangout.data.getState().pointsArray);
+							console.log(localId);
+							console.log(gapi.hangout.getLocalParticipantId());
+							localId[gapi.hangout.getLocalParticipantId()] = [points, 0];
+							console.log("COMMAND SENDING" + points);
+							gapi.hangout.data.submitDelta({
+								"pointsArray" : JSON.stringify(localId)
+							});
+						}
+						
+						
 						console.log(gapi.hangout.getEnabledParticipants()[0].id + "," + gapi.hangout.getLocalParticipantId());
 						if (gapi.hangout.getEnabledParticipants()[0].id == gapi.hangout.getLocalParticipantId()) {
 							try {
@@ -977,14 +1067,29 @@ function init() {
 							});
 							menuAfter = "<div id='postMenu'>" + localText.InputText[0].menuAfterText + "</div>";
 							waitingForInfo = localText.InputText[0].waitingForInformation;
-							if(gapi.hangout.data.getState().GameMode != undefined && gapi.hangout.data.getState().actorsChosen != ""){
-								gameMode = gapi.hangout.data.getState().GameMode;
-								passedId = gapi.hangout.data.getState().charID;
-								console.log(JSON.parse(gapi.hangout.data.getState().actorsChosen));
-								parseData(JSON.parse(gapi.hangout.data.getState().actorsChosen));
+						
+							if (gapi.hangout.data.getState().GameMode != undefined && gapi.hangout.data.getState().actorsChosen != "") {
+								if(gapi.hangout.data.getState().actorsChosen!=undefined){
+									gameMode = gapi.hangout.data.getState().GameMode;
+									passedId = gapi.hangout.data.getState().charID;
+									//console.log(JSON.parse(gapi.hangout.data.getState().actorsChosen));
+									parseData(JSON.parse(gapi.hangout.data.getState().actorsChosen));
+									if(gameMode == "QuickFire"){
+										document.getElementById("time").innerHTML = gapi.hangout.data.getState().timeToSet;
+										startCountdown();
+									}
+									
+								}
 							}
-							else{
-							contentSwap(menuAfter);
+							else if(gapi.hangout.data.getState().GameMode != undefined && (gapi.hangout.data.getState().actorsChosen == ""||gapi.hangout.data.getState().actorsChosen == undefined)) {
+									points = 0;
+									gameMode = gapi.hangout.data.getState().GameMode;
+									GameSetup(gapi.hangout.data.getState().GameMode);
+									contentSwap(guessActor);
+								}	
+								
+							 else {
+								contentSwap(menuAfter);
 							}
 							console.log("pointsArray sent from command being nothing and people joined.");
 						} else if (gapi.hangout.getEnabledParticipants().length > 1 && gapi.hangout.data.getState().GameMode != undefined) {
