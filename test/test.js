@@ -47,7 +47,7 @@ var thing = "00:30";
 
 //console.log("10".charAt(1));
 splitTest(thing);
-
+console.log(4*2 > 4);
 function splitTest( tester ){
 	var min = tester.split(":")[0];
 	var sec = tester.split(":")[1];
