@@ -37,17 +37,73 @@ $.ajax({
 
 //document.getElementById("container").innerHTML = mainMenu();
 //document.getElementById("wrapper").innerHTML = waiting();
-document.getElementById("wrapper").innerHTML = genericDiv();
+//document.getElementById("wrapper").innerHTML = genericDiv();
 //actorSelect(10); //num is indicative of how many actors to pull through
 //parseData(10); //brings up what other players see.
 //winner(JSONarr);
 
 ////parseData(testData);
-var thing = "00:30";
+//var thing = "00:30";
 
 //console.log("10".charAt(1));
-splitTest(thing);
-console.log(4*2 > 4);
+//splitTest(thing);
+var content = loadJSON("formattedJson.json");
+formatContent(content);
+
+function formatContent(thing){
+	var stringThing = "";
+	for( var i = 44; i < thing.length; i++){
+		for(var j = 0; j < thing[i]["Title"].length; j++){
+			console.log(i+","+j);
+			var Title = thing[i]["Title"][j];
+			var Name = thing[i]["Name"][j];
+			var ImageURL = thing[i]["ImageURL"][j].replace(/\\/g, '');;
+			var Actor = thing[i]["Actor"][j];
+			stringThing += "<li style='width:200px; border-top:3px solid black;'>"+ i+"<img src='"+ImageURL+"' style='width:200px;'><span>"+Actor+" as "+Name+"</span>";
+		}	
+	}
+	
+	document.getElementById("listContainer").innerHTML = stringThing;
+}
+
+
+
+
+
+
+
+function loadJSON(filePath) {
+  // Load json file;
+  var json = loadTextFileAjaxSync(filePath, "application/json");
+  // Parse json
+  return JSON.parse(json);
+}   
+
+// Load text with Ajax synchronously: takes path to file and optional MIME type
+function loadTextFileAjaxSync(filePath, mimeType)
+{
+  var xmlhttp=new XMLHttpRequest();
+  xmlhttp.open("GET",filePath,false);
+  if (mimeType != null) {
+    if (xmlhttp.overrideMimeType) {
+      xmlhttp.overrideMimeType(mimeType);
+    }
+  }
+  xmlhttp.send();
+  if (xmlhttp.status==200)
+  {
+    return xmlhttp.responseText;
+  }
+  else {
+    // TODO Throw exception
+    return null;
+  }
+}
+
+
+
+
+
 function splitTest( tester ){
 	var min = tester.split(":")[0];
 	var sec = tester.split(":")[1];
