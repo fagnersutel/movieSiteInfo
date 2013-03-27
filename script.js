@@ -487,20 +487,20 @@ function GameSetup(modeToSetup) {
 	if (modeToSetup == "10RoundShootOut") {
 		pauseCountdown();
 		timeForRound = "";
-		maxRounds = 2;
+		maxRounds = 10;
 	//10
 	}
 
 	if (modeToSetup == "3ShotsEach") {
 		pauseCountdown();
 		timeForRound = "";
-		maxRounds = 1;
+		maxRounds = 3;
 		//double this for the round count.
 	}
 
 	if (modeToSetup == "QuickFire") {
 		timeForRound = "00:30";
-		maxRounds = 2;
+		maxRounds = 20;
 		//20
 	}
 
